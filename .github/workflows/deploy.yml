@@ -1,5 +1,9 @@
 name: Deploy site
-
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+  deployments: write
 on:
   push:
     branches:
