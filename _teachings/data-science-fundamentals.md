@@ -1,4 +1,5 @@
 ---
+published: false
 layout: course
 title: 数据科学基础
 description: 本课程涵盖数据科学的基础内容，包括数据采集、清洗、分析和可视化。学生将学习处理真实数据集的实用技能。
