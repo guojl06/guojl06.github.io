@@ -75,3 +75,10 @@ jobs:
           git add -A
           git commit -m "chore: render the latest CV"
           git push
+      # GITHUB_TOKEN pushes don't trigger other workflows' `on: push`,
+      # so explicitly fire the deploy to rebuild gh-pages.
+      - name: Trigger site deployment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow run deploy.yml --ref master
