@@ -25,7 +25,16 @@ jobs:
       - name: Install RenderCV
         run: |
           pip install -r requirements.txt
-      - name: RenderCV
+      # Step 1: ALWAYS sync the web-page data first, so it updates even if PDF fails.
+      - name: Sync resume.json from cv.yml
+        run: |
+          python bin/cv_to_resume_json.py
+          echo "Generated resume.json:"
+          python -c "import json;d=json.load(open('assets/json/resume.json'));print(' name:',d['basics']['name'])"
+      # Step 2: Try to generate the PDF. Non-fatal: RenderCV may reject non-ASCII
+      # names (e.g. Chinese). The web page already updated in step 1 regardless.
+      - name: Render PDF (non-fatal)
+        continue-on-error: true
         run: |
           cv_file=$(find _data  -maxdepth 1 -type f \( -name "cv.yaml" -o -name "cv.yml" \))
           if [ -z "$cv_file" ]; then
@@ -43,14 +52,17 @@ jobs:
             exit 1
           fi
           rendercv render $cv_file --settings $settings
-          rm assets/rendercv/rendercv_output/*.typ
-      - name: Sync resume.json and copy PDF
+          rm -f assets/rendercv/rendercv_output/*.typ
+      # Step 3: Copy the PDF to a stable path IF rendercv produced one.
+      - name: Copy PDF for download button
         run: |
-          # Generate assets/json/resume.json from _data/cv.yml so the web CV stays in sync
-          python bin/cv_to_resume_json.py
-          # Copy the generated PDF to a stable path for the download button
           mkdir -p assets/pdf
-          cp assets/rendercv/rendercv_output/*.pdf assets/pdf/cv.pdf
+          if ls assets/rendercv/rendercv_output/*.pdf 1> /dev/null 2>&1; then
+            cp assets/rendercv/rendercv_output/*.pdf assets/pdf/cv.pdf
+            echo "PDF updated."
+          else
+            echo "No PDF was generated (RenderCV may have failed). Keeping previous cv.pdf."
+          fi
       - name: Upload rendercv_output as an artifact
         uses: actions/upload-artifact@v4
         with:

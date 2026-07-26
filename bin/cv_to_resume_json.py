@@ -29,7 +29,7 @@ def convert_education(items):
             "location": it.get("location", ""),
             "url": it.get("url", ""),
             "area": it.get("area", ""),
-            "studyType": it.get("studyType", ""),
+            "studyType": it.get("degree", it.get("studyType", "")),
             "startDate": convert_date(it.get("start_date")),
             "endDate": convert_date(it.get("end_date")),
             "score": it.get("score", ""),
@@ -191,11 +191,11 @@ def convert(cv_data):
 
     basics = {
         "name": cv.get("name", ""),
-        "label": cv.get("label", ""),
-        "image": cv.get("image", ""),
+        "label": cv.get("headline", cv.get("label", "")),
+        "image": cv.get("photo", cv.get("image", "")),
         "email": cv.get("email", ""),
         "phone": cv.get("phone", ""),
-        "url": cv.get("url", ""),
+        "url": cv.get("website", cv.get("url", "")),
         "summary": cv.get("summary", ""),
     }
 
