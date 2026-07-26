@@ -44,6 +44,13 @@ jobs:
           fi
           rendercv render $cv_file --settings $settings
           rm assets/rendercv/rendercv_output/*.typ
+      - name: Sync resume.json and copy PDF
+        run: |
+          # Generate assets/json/resume.json from _data/cv.yml so the web CV stays in sync
+          python bin/cv_to_resume_json.py
+          # Copy the generated PDF to a stable path for the download button
+          mkdir -p assets/pdf
+          cp assets/rendercv/rendercv_output/*.pdf assets/pdf/cv.pdf
       - name: Upload rendercv_output as an artifact
         uses: actions/upload-artifact@v4
         with:
