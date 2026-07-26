@@ -1,10 +1,10 @@
 ---
 layout: post
-title: a post with typograms
+title: Typograms 示例
 date: 2024-04-29 23:36:10
-description: this is what included typograms code could look like
-tags: formatting diagrams
-categories: sample-posts
+description: 文章中插入 Typograms 代码的效果展示
+tags: 排版 图示
+categories: 示例文章
 typograms: true
 ---
 

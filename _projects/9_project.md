@@ -4,7 +4,7 @@ title: 项目 9
 description: 另一个带图片的项目 🎉
 img: assets/img/6.jpg
 importance: 4
-category: fun
+category: 趣味
 ---
 
 每个项目都有一个漂亮的功能展示页面。

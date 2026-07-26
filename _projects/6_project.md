@@ -4,7 +4,7 @@ title: 项目 6
 description: 一个没有图片的项目
 img:
 importance: 4
-category: fun
+category: 趣味
 ---
 
 每个项目都有一个漂亮的功能展示页面。

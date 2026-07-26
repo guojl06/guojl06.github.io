@@ -5,7 +5,7 @@ permalink: /projects/
 description: 一个不断增长的项目合集。
 nav: true
 nav_order: 3
-display_categories: [work, fun]
+display_categories: [工作, 趣味]
 horizontal: false
 ---
 

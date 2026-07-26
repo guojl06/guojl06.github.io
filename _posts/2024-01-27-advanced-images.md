@@ -1,10 +1,10 @@
 ---
 layout: post
-title: a post with advanced image components
+title: 高级图片组件示例
 date: 2024-01-27 11:46:00
-description: this is what advanced image components could look like
-tags: formatting images
-categories: sample-posts
+description: 高级图片组件的效果展示
+tags: 排版 图片
+categories: 示例文章
 thumbnail: assets/img/9.jpg
 images:
   compare: true

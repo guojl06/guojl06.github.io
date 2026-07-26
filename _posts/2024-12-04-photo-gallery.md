@@ -1,10 +1,10 @@
 ---
 layout: post
-title: a post with image galleries
+title: 图片画廊示例
 date: 2024-12-04 01:59:00
-description: this is what included image galleries could look like
-tags: formatting images
-categories: sample-posts
+description: 文章中插入图片画廊的效果展示
+tags: 排版 图片
+categories: 示例文章
 thumbnail: assets/img/9.jpg
 images:
   lightbox2: true

@@ -1,10 +1,10 @@
 ---
 layout: post
-title: a post with geojson
+title: GeoJSON 地图示例
 date: 2024-01-26 17:57:00
-description: this is what included geojson code could look like
-tags: formatting charts maps
-categories: sample-posts
+description: 文章中插入 GeoJSON 代码的效果展示
+tags: 排版 图表 地图
+categories: 示例文章
 map: true
 ---
 

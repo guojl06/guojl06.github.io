@@ -1,10 +1,10 @@
 ---
 layout: post
-title: a post with jupyter notebook
+title: Jupyter Notebook 示例
 date: 2023-07-04 08:57:00-0400
-description: an example of a blog post with jupyter notebook
-tags: formatting jupyter
-categories: sample-posts
+description: 包含 Jupyter Notebook 的博客文章示例
+tags: 排版 jupyter
+categories: 示例文章
 giscus_comments: true
 related_posts: false
 ---

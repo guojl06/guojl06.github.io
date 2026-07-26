@@ -4,7 +4,7 @@ title: 项目 1
 description: 带背景图片
 img: assets/img/12.jpg
 importance: 1
-category: work
+category: 工作
 related_publications: true
 ---
 

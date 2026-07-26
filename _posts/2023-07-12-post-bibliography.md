@@ -1,10 +1,10 @@
 ---
 layout: post
-title: a post with bibliography
+title: 参考文献示例
 date: 2023-07-12 09:56:00-0400
-description: an example of a blog post with bibliography
-tags: formatting bib
-categories: sample-posts
+description: 包含参考文献的博客文章示例
+tags: 排版 文献
+categories: 示例文章
 giscus_comments: true
 related_posts: false
 related_publications: true

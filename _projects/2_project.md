@@ -4,7 +4,7 @@ title: 项目 2
 description: 带背景图片和 giscus 评论的项目
 img: assets/img/3.jpg
 importance: 2
-category: work
+category: 工作
 giscus_comments: true
 ---
 

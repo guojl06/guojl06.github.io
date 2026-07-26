@@ -1,10 +1,10 @@
 ---
 layout: post
-title: a post with disqus comments
+title: Disqus 评论示例
 date: 2015-10-20 11:59:00-0400
-description: an example of a blog post with disqus comments
-tags: comments
-categories: sample-posts external-services
+description: 包含 Disqus 评论的博客文章示例
+tags: 评论
+categories: 示例文章 外部服务
 disqus_comments: true
 related_posts: false
 ---

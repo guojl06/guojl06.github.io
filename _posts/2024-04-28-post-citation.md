@@ -1,10 +1,10 @@
 ---
 layout: post
-title: a post that can be cited
+title: 可被引用的文章
 date: 2024-04-28 15:06:00
-description: this is what a post that can be cited looks like
-tags: formatting citation
-categories: sample-posts
+description: 一篇可被引用的文章示例
+tags: 排版 引用
+categories: 示例文章
 citation: true
 ---
 

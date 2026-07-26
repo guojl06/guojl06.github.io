@@ -1,10 +1,10 @@
 ---
 layout: post
-title: a post with table of contents on a sidebar
+title: 侧边栏目录示例
 date: 2023-04-25 10:14:00-0400
-description: an example of a blog post with table of contents on a sidebar
-tags: formatting toc sidebar
-categories: sample-posts
+description: 包含侧边栏目录的博客文章示例
+tags: 排版 目录 侧边栏
+categories: 示例文章
 giscus_comments: true
 related_posts: false
 toc:

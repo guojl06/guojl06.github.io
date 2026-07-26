@@ -5,7 +5,7 @@ description: 一个跳转到其他网站的项目
 img: assets/img/7.jpg
 redirect: https://www.wikipedia.org/
 importance: 3
-category: work
+category: 工作
 ---
 
 每个项目都有一个漂亮的功能展示页面。

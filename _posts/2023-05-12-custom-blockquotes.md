@@ -1,10 +1,10 @@
 ---
 layout: post
-title: a post with custom blockquotes
+title: 自定义引用块示例
 date: 2023-05-12 15:53:00-0400
-description: an example of a blog post with custom blockquotes
-tags: formatting blockquotes
-categories: sample-posts
+description: 包含自定义引用块的博客文章示例
+tags: 排版 引用块
+categories: 示例文章
 giscus_comments: true
 related_posts: true
 ---
