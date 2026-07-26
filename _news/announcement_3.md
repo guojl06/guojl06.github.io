@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-A simple inline announcement with Markdown emoji! :sparkles: :smile:
+一条带 Markdown 表情符号的简单内联公告！ :sparkles: :smile:

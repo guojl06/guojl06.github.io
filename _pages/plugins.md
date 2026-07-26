@@ -1,26 +1,26 @@
 ---
 layout: page
-title: plugins
+title: 插件
 permalink: /plugins/
 nav: false
-description: featured and bundled plugin ecosystem catalog for al-folio v1.x
+description: al-folio v1.x 的精选与内置插件生态目录
 ---
 
-`al-folio` `v1.x` is a starter with plugin-owned runtime features.
-This page lists plugins recognized in the ecosystem catalog (`_data/featured_plugins.yml`).
+`al-folio` `v1.x` 是一个由插件提供运行时特性的 starter 模板。
+本页面列出生态目录（`_data/featured_plugins.yml`）中收录的插件。
 
-## Naming convention
+## 命名约定
 
-- Theme-coupled plugins:
-  - repo: `al-folio-<feature>`
-  - gem/plugin id: `al_folio_<feature>`
-- Reusable plugins:
-  - repo: `al-<feature>` or neutral name
-  - gem/plugin id aligned with plugin namespace
+- 与主题耦合的插件：
+  - 仓库：`al-folio-<feature>`
+  - gem/插件 id：`al_folio_<feature>`
+- 可复用插件：
+  - 仓库：`al-<feature>` 或中性名称
+  - gem/插件 id 与插件命名空间对齐
 
-Third-party non-`al-*` plugins are also eligible for featuring.
+第三方的非 `al-*` 插件也可以申请收录。
 
-## Bundled plugins
+## 内置插件
 
 {% assign bundled_plugins = site.data.featured_plugins | where: "status", "bundled" %}
 
@@ -51,12 +51,12 @@ Third-party non-`al-*` plugins are also eligible for featuring.
   </tbody>
 </table>
 
-## Featured-only plugins
+## 仅精选插件
 
 {% assign featured_only_plugins = site.data.featured_plugins | where: "status", "featured" %}
 {% if featured_only_plugins.size == 0 %}
-There are no featured-only entries yet.
-Open a **Plugin Feature Proposal** issue if you want your plugin considered.
+目前还没有仅精选的条目。
+如果你想让自己的插件被考虑收录，请提交一个 **Plugin Feature Proposal** issue。
 {% else %}
 
 <table>
@@ -87,11 +87,11 @@ Open a **Plugin Feature Proposal** issue if you want your plugin considered.
 </table>
 {% endif %}
 
-## Proposing a plugin for featuring
+## 申请收录插件
 
-1. Open a **Plugin Feature Proposal** issue in this repo.
-2. Provide plugin metadata (repo URL, gem name, plugin id, compatibility, demo path, maintainer contact).
-3. Open a PR updating `_data/featured_plugins.yml`.
-4. If requesting default starter bundling, include `Gemfile` and `_config.yml` wiring updates in the same PR.
+1. 在本仓库提交一个 **Plugin Feature Proposal** issue。
+2. 提供插件元信息（仓库 URL、gem 名称、插件 id、兼容性、demo 路径、维护者联系方式）。
+3. 提交一个 PR 更新 `_data/featured_plugins.yml`。
+4. 如果申请默认内置到 starter，请在同一个 PR 中包含 `Gemfile` 和 `_config.yml` 的配套修改。
 
-Featuring and bundling are separate maintainer decisions.
+精选与内置是维护者的两个独立决定。

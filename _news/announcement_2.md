@@ -1,33 +1,33 @@
 ---
 layout: post
-title: A long announcement with details
+title: 一条带详情的长公告
 date: 2015-11-07 16:11:00-0400
 inline: false
 related_posts: false
 ---
 
-Announcements and news can be much longer than just quick inline posts. In fact, they can have all the features available for the standard blog posts. See below.
+公告和动态可以比简短的内联帖子长得多。事实上，它们可以使用标准博客文章的所有功能。见下文。
 
 ---
 
-Jean shorts raw denim Vice normcore, art party High Life PBR skateboard stumptown vinyl kitsch. Four loko meh 8-bit, tousled banh mi tilde forage Schlitz dreamcatcher twee 3 wolf moon. Chambray asymmetrical paleo salvia, sartorial umami four loko master cleanse drinking vinegar brunch. <a href="https://www.pinterest.com">Pinterest</a> DIY authentic Schlitz, hoodie Intelligentsia butcher trust fund brunch shabby chic Kickstarter forage flexitarian. Direct trade <a href="https://en.wikipedia.org/wiki/Cold-pressed_juice">cold-pressed</a> meggings stumptown plaid, pop-up taxidermy. Hoodie XOXO fingerstache scenester Echo Park. Plaid ugh Wes Anderson, freegan pug selvage fanny pack leggings pickled food truck DIY irony Banksy.
+这是一段占位文字，用来演示长公告的排版效果。你可以在公告里加入图片、链接、列表等各种 Markdown 元素，就像写一篇普通的博客文章一样。换个 <a href="https://www.pinterest.com">链接</a>、来一段 <a href="https://en.wikipedia.org/wiki/Cold-pressed_juice">冷压果汁</a> 的介绍，都可以。这一段只是占位填充，展示页面在内容较多时的视觉效果。
 
-#### Hipster list
+#### 示例列表
 
 <ul>
-    <li>brunch</li>
-    <li>fixie</li>
-    <li>raybans</li>
-    <li>messenger bag</li>
+    <li>早午餐</li>
+    <li>死飞自行车</li>
+    <li>雷朋墨镜</li>
+    <li>邮差包</li>
 </ul>
 
-Hoodie Thundercats retro, tote bag 8-bit Godard craft beer gastropub. Truffaut Tumblr taxidermy, raw denim Kickstarter sartorial dreamcatcher. Quinoa chambray slow-carb salvia readymade, bicycle rights 90's yr typewriter selfies letterpress cardigan vegan.
+继续一段占位文字，用来填充版面。你可以在这里写你真正想发布的消息，比如论文被接收、获得奖项、即将开会等等。
 
 ---
 
-Pug heirloom High Life vinyl swag, single-origin coffee four dollar toast taxidermy reprehenderit fap distillery master cleanse locavore. Est anim sapiente leggings Brooklyn ea. Thundercats locavore excepteur veniam eiusmod. Raw denim Truffaut Schlitz, migas sapiente Portland VHS twee Bushwick Marfa typewriter retro id keytar.
+再来一段占位文字。占位文字的意义在于让你预览排版，真正使用时请替换成你自己的内容。
 
-> We do not grow absolutely, chronologically. We grow sometimes in one dimension, and not in another, unevenly. We grow partially. We are relative. We are mature in one realm, childish in another.
-> —Anais Nin
+> 我们并不是绝对地、按时间顺序地成长。我们有时在一个维度上成长，而在另一个维度上停滞，成长是不均衡的。我们是相对的。我们在一个领域成熟，在另一个领域幼稚。
+> ——阿娜伊斯·宁
 
-Fap aliqua qui, scenester pug Echo Park polaroid irony shabby chic ex cardigan church-key Odd Future accusamus. Blog stumptown sartorial squid, gastropub duis aesthetic Truffaut vero. Pinterest tilde twee, odio mumblecore jean shorts lumbersexual.
+最后再放一段占位文字收尾。你可以删除这条示例公告，或者直接把内容改成你自己的。

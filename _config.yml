@@ -6,15 +6,15 @@ title: smartThis' s Ciallo ～(∠・ω< )⌒★ # the website title (if blank, 
 first_name: 郭
 last_name: 嘉乐
 contact_note: >
-  You can even add a little note about which of these is the best way to reach you.
+  你可以在这里加一句小注，说明哪种方式联系你最方便。
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
-  A simple, whitespace theme for academics. Based on [*folio](https://github.com/bogoli/-folio) design.
+  一个简洁的学术个人主页模板。基于 [*folio](https://github.com/bogoli/-folio) 设计。
 footer_text: >
-  Powered by <a href="https://jekyllrb.com/" target="_blank">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio">al-folio</a> theme.
-  Hosted by <a href="https://pages.github.com/" target="_blank">GitHub Pages</a>.
-  Photos from <a href="https://unsplash.com" target="_blank">Unsplash</a>.
+  由 <a href="https://jekyllrb.com/" target="_blank">Jekyll</a> 和 <a href="https://github.com/alshedivat/al-folio">al-folio</a> 主题驱动。
+  托管于 <a href="https://pages.github.com/" target="_blank">GitHub Pages</a>。
+  图片来自 <a href="https://unsplash.com" target="_blank">Unsplash</a>。
 keywords: jekyll, jekyll-theme, academic-website, portfolio-website # add your own keywords or leave empty
-lang: en # the language of your site (for example: en, fr, cn, ru, etc.)
+lang: zh-CN # the language of your site (for example: en, fr, cn, ru, etc.)
 icon: ⚛️ # the emoji used as the favicon (alternatively, provide image name in /assets/img/)
 
 url: https://guojl06.github.io # the base hostname & protocol for your site
@@ -121,8 +121,8 @@ bing_site_verification: # out your bing-site-verification ID (Bing Webmaster)
 # Blog
 # -----------------------------------------------------------------------------
 
-blog_name: al-folio # blog_name will be displayed in your blog page
-blog_description: a simple whitespace theme for academics
+blog_name: 博客 # blog_name will be displayed in your blog page
+blog_description: 一个简洁的学术风博客
 permalink: /blog/:year/:title/
 lsi: false # produce an index for related posts
 
@@ -139,7 +139,7 @@ related_blog_posts:
 giscus:
   repo: # <your-github-user-name>/<your-github-repo-name>
   repo_id: # leave empty or specify your repo_id (see https://giscus.app/)
-  category: Comments # name of the category under which discussions will be created
+  category: 评论 # name of the category under which discussions will be created
   category_id: # leave empty or specify your category_id (see https://giscus.app/)
   mapping: title # identify discussions by post title
   strict: 1 # use strict identification mode
@@ -148,7 +148,7 @@ giscus:
   dark_theme: dark # name of the dark color scheme (preferred works well with al-folio dark mode)
   light_theme: light # name of the light color scheme (preferred works well with al-folio light mode)
   emit_metadata: 0
-  lang: en
+  lang: zh-CN
 
 # Disqus comments (DEPRECATED)
 disqus_shortname: al-folio # put your disqus shortname
@@ -358,7 +358,7 @@ scholar:
   join_strings: true
 
   details_dir: bibliography
-  details_link: Details
+  details_link: 详情
 
   query: "@*"
   group_by: year
