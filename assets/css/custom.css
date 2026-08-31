@@ -1,0 +1,663 @@
+/* ============================================================
+   Magazine Minimal — Monochrome × Claude-grade restraint
+   Custom design layer for al-folio (loaded after main.css)
+   纯黑白灰 / 杂志排版衬线 / 极客等宽点缀 / 克制动效
+   ============================================================ */
+
+/* ---------- 1. Design Tokens ---------- */
+:root {
+  /* Monochrome ramp — light */
+  --mm-bg:           #ffffff;
+  --mm-bg-alt:       #f7f7f8;
+  --mm-text:         #1a1a1a;
+  --mm-text-muted:   #6b6b6b;
+  --mm-text-faint:   #9b9b9b;
+  --mm-border:       #ebebeb;
+  --mm-border-mid:   #d4d4d4;
+
+  /* Neutralize ALL al-folio global vars → monochrome (covers every
+     place the gem references --global-* including hover, code-bg, etc.) */
+  --global-theme-color:          #1a1a1a;
+  --global-text-color:           #1a1a1a;
+  --global-text-color-light:     #6b6b6b;
+  --global-bg-color:             #ffffff;
+  --global-divider-color:        #ebebeb;
+  --global-card-bg-color:        #f7f7f8;
+  --global-code-bg-color:        #f2f2f3;
+  --global-theme-color-light:    #1a1a1a;
+  --global-hover-color:          #1a1a1a;
+  --global-hover-text-color:     #ffffff;
+  --global-highlight-color:      #1a1a1a;
+  --global-footer-bg-color:      #1a1a1a;
+  --global-footer-text-color:    #ededed;
+  --global-footer-link-color:    #ffffff;
+  --global-distill-app-color:    #6b6b6b;
+  --global-back-to-top-bg-color: rgba(0, 0, 0, 0.4);
+  --global-back-to-top-text-color: #ffffff;
+  --global-newsletter-bg-color:  #ffffff;
+  --global-newsletter-text-color: #1a1a1a;
+
+  /* Type system */
+  --mm-serif: 'Newsreader', 'Songti SC', 'Noto Serif SC', 'Source Han Serif SC', Georgia, serif;
+  --mm-sans:  'Inter', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+  --mm-mono:  'JetBrains Mono', 'SF Mono', 'Menlo', monospace;
+}
+
+[data-theme="dark"] {
+  --mm-bg:           #0a0a0a;
+  --mm-bg-alt:       #141414;
+  --mm-text:         #ededed;
+  --mm-text-muted:   #9a9a9a;
+  --mm-text-faint:   #6a6a6a;
+  --mm-border:       #242424;
+  --mm-border-mid:   #333333;
+
+  --global-theme-color:          #ededed;
+  --global-text-color:           #ededed;
+  --global-text-color-light:     #9a9a9a;
+  --global-bg-color:             #0a0a0a;
+  --global-divider-color:        #242424;
+  --global-card-bg-color:        #141414;
+  --global-code-bg-color:        #161616;
+  --global-theme-color-light:    #ededed;
+  --global-hover-color:          #ededed;
+  --global-hover-text-color:     #0a0a0a;
+  --global-highlight-color:      #ededed;
+  --global-footer-bg-color:      #0a0a0a;
+  --global-footer-text-color:    #9a9a9a;
+  --global-footer-link-color:    #ededed;
+  --global-distill-app-color:    #9a9a9a;
+  --global-back-to-top-bg-color: rgba(255, 255, 255, 0.5);
+  --global-back-to-top-text-color: #000000;
+  --global-newsletter-bg-color:  #141414;
+  --global-newsletter-text-color: #ededed;
+}
+
+/* ---------- 2. Base Typography ---------- */
+body {
+  font-family: var(--mm-sans);
+  background-color: var(--mm-bg);
+  color: var(--mm-text);
+  font-size: 16px;
+  line-height: 1.7;
+  letter-spacing: -0.011em;
+  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, h6 {
+  font-family: var(--mm-serif);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.022em;
+  color: var(--mm-text);
+}
+
+a {
+  color: var(--mm-text);
+  text-decoration: none;
+  transition: color .25s ease, opacity .25s ease;
+}
+a:hover { opacity: .55; }
+
+/* article/post body links must be visibly links without hover.
+   Homepage wraps content in plain .clearfix, posts in .post-content,
+   so cover both plus the console preview pane. */
+.clearfix a:not(.nav-link):not(.social a):not(.contact-icons a):not(.mm-filterbar a):not(.btn):not(.more-info a),
+.post-content a,
+.preview a {
+  text-decoration: underline;
+  text-decoration-color: var(--mm-text-muted);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: text-decoration-color .2s ease, opacity .2s ease;
+}
+.clearfix a:not(.nav-link):not(.social a):not(.contact-icons a):not(.mm-filterbar a):not(.btn):not(.more-info a):hover,
+.post-content a:hover,
+.preview a:hover {
+  opacity: .6;
+  text-decoration-color: var(--mm-text);
+}
+
+/* Bootstrap weight utilities — calm the heaviness */
+.font-weight-bold { font-weight: 600; }
+.font-weight-lighter { font-weight: 400; }
+
+/* ---------- 3. Navbar — minimal top bar ---------- */
+#navbar {
+  background-color: rgba(255, 255, 255, 0.82);
+  backdrop-filter: saturate(180%) blur(14px);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  border-bottom: 1px solid var(--mm-border);
+  box-shadow: none !important;
+  min-height: 56px;
+}
+[data-theme="dark"] #navbar {
+  background-color: rgba(10, 10, 10, 0.78);
+}
+.navbar .container { max-width: 1000px; }
+
+.navbar-brand {
+  font-family: var(--mm-serif);
+  font-weight: 500;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+  color: var(--mm-text) !important;
+}
+
+/* nav links — uppercase tracking, hairline underline slides in */
+.navbar-nav .nav-link {
+  font-family: var(--mm-sans);
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mm-text-muted) !important;
+  padding: 0.5rem 0.85rem !important;
+  position: relative;
+  transition: color .25s ease;
+}
+.navbar-nav .nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0.85rem; right: 0.85rem; bottom: 0.3rem;
+  height: 1px;
+  background: var(--mm-text);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .3s cubic-bezier(.2, .8, .2, 1);
+}
+.navbar-nav .nav-item:hover .nav-link::after,
+.navbar-nav .nav-item.active .nav-link::after {
+  transform: scaleX(1);
+}
+.navbar-nav .nav-item.active .nav-link,
+.navbar-nav .nav-link:hover {
+  color: var(--mm-text) !important;
+  opacity: 1;
+}
+
+/* search + theme toggle — quiet */
+#search-toggle .nav-link,
+.toggle-container button {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--mm-text-muted);
+  background: none;
+  border: none;
+}
+#search-toggle:hover .nav-link { color: var(--mm-text); opacity: 1; }
+
+/* hamburger — thin lines */
+.navbar-toggler { border: none; padding: .4rem; }
+.navbar-toggler .icon-bar {
+  background-color: var(--mm-text);
+  display: block; width: 20px; height: 1.5px; border-radius: 0;
+  margin: 4px 0;
+  transition: .3s ease;
+}
+
+/* ---------- 4. Page content ---------- */
+.post { margin-top: 2.5rem; }
+.post-header { margin-bottom: 3rem; }
+
+/* hero title — magazine masthead headline (scoped to page header only).
+   Without this scoping, the giant size also hits every <a class="post-title">
+   in blog/project lists, blowing up all list titles. */
+.post-header .post-title {
+  font-family: var(--mm-serif);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+}
+.post .desc {
+  font-family: var(--mm-sans);
+  font-size: 0.95rem;
+  color: var(--mm-text-muted);
+  letter-spacing: 0.01em;
+  margin-top: 1rem;
+}
+
+/* list-item titles (blog / projects) — big serif, smaller than hero */
+.post-list .post-title,
+.card-title {
+  font-family: var(--mm-serif);
+  font-weight: 500;
+  font-size: clamp(1.8rem, 4.5vw, 2.6rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.post-list .post-title:hover { opacity: .6; }
+
+/* ---------- 4b. Newspaper hero — dual-column masthead ---------- */
+.mm-masthead { margin-bottom: 3.5rem; }
+.mm-rule { border: 0; border-top: 1px solid var(--mm-text); margin: 0; }
+.mm-rule-thick { border-top-width: 4px; }
+.mm-rule-thin  { border-top-width: 1px; opacity: .35; }
+.mm-kicker {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--mm-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--mm-text);
+  padding: 0.5rem 0;
+}
+.mm-cursor {
+  display: inline-block;
+  width: 0.5ch;
+  animation: mm-blink 1.1s step-end infinite;
+}
+
+/* dual-column hero: big text left, image right */
+.mm-hero-grid {
+  display: grid;
+  /* minmax(0, …): tracks ignore content min-width, so the typewriter
+     (nowrap fragments) can NEVER resize the columns/photo mid-loop */
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+  gap: 3.5rem;
+  align-items: center;
+  margin: 2.2rem 0 0.5rem;
+}
+@media (max-width: 768px) {
+  .mm-hero-grid { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+}
+.mm-hero-media img {
+  width: 100%; height: auto;
+  border-radius: 2px;
+  box-shadow: none !important;
+}
+.mm-hero-media .more-info { margin-top: 0.9rem; }
+
+/* the giant typewriter headline — equal-size fragments */
+.mm-headline {
+  font-size: clamp(2.4rem, 9vw, 5.5rem) !important;
+  font-weight: 500 !important;
+  line-height: 0.95 !important;
+  letter-spacing: -0.04em !important;
+  margin: 0 0 0.4rem !important;
+  /* fixed min-height: reserves full 3-line space (one line per fragment)
+     so typing/deleting never pushes content below. */
+  min-height: 3.6em;
+}
+/* every fragment is the SAME font-size — only family/weight/style rotates */
+.mm-tw-frag {
+  font-size: 1em;
+  line-height: inherit;
+  display: inline;
+}
+/* last fragment (emoticon) breaks to its own line, never wraps */
+.mm-tw-frag-block { display: block; white-space: nowrap; min-height: 1.1em; }
+
+/* font-style palettes cycled by JS each loop — serif only */
+.mm-f-serif-bold  { font-family: var(--mm-serif);   font-weight: 700; font-style: normal; }
+.mm-f-serif-reg   { font-family: var(--mm-serif);   font-weight: 400; font-style: normal; }
+.mm-f-serif-light { font-family: var(--mm-serif);   font-weight: 300; font-style: normal; }
+.mm-f-serif-ital  { font-family: var(--mm-serif);   font-weight: 500; font-style: italic; }
+.mm-f-script-ital { font-family: 'Cormorant', var(--mm-serif); font-weight: 600; font-style: italic; }
+.mm-f-script-reg  { font-family: 'Cormorant', var(--mm-serif); font-weight: 500; font-style: normal; }
+
+/* blinking cursor trailing the typewriter */
+.mm-tw-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 0.9em;
+  margin-left: 4px;
+  background: var(--mm-text);
+  vertical-align: text-bottom;
+  animation: mm-blink 1s step-end infinite;
+}
+
+.mm-deck {
+  font-family: 'Cormorant', var(--mm-serif) !important;
+  font-style: italic;
+  font-size: 1.35rem !important;
+  line-height: 1.45;
+  color: var(--mm-text-muted);
+  max-width: 32em;
+  margin-top: 1rem;
+}
+.mm-deck a { text-decoration: underline; text-underline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mm-cursor, .mm-tw-cursor { animation: none; }
+}
+
+/* shared keyframes */
+@keyframes mm-blink {
+  0%, 49%   { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* ---------- 12. Static repository cards ---------- */
+.mm-repo-card {
+  border: 1px solid var(--mm-border);
+  border-radius: 3px;
+  padding: 1.1rem 1.2rem;
+  transition: border-color .3s ease, transform .3s ease;
+  background: var(--mm-bg);
+}
+.mm-repo-card:hover {
+  border-color: var(--mm-text);
+  transform: translateY(-2px);
+}
+.mm-repo-link { color: inherit; display: block; }
+.mm-repo-link:hover { opacity: 1; }
+.mm-repo-head { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; }
+.mm-repo-name {
+  font-family: var(--mm-serif);
+  font-weight: 600;
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+}
+.mm-repo-fork-tag {
+  font-family: var(--mm-mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--mm-text-faint);
+  border: 1px solid var(--mm-border);
+  padding: 1px 5px;
+  border-radius: 2px;
+}
+.mm-repo-desc {
+  font-size: 0.82rem;
+  color: var(--mm-text-muted);
+  line-height: 1.5;
+  margin: 0 0 0.7rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.mm-repo-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: var(--mm-mono);
+  font-size: 0.7rem;
+  color: var(--mm-text-faint);
+}
+.mm-repo-lang { display: flex; align-items: center; gap: 0.35rem; }
+.mm-lang-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--mm-text);
+}
+.mm-repo-updated { margin-left: auto; }
+
+/* topics */
+.mm-repo-topics { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.6rem; }
+.mm-repo-topic {
+  font-family: var(--mm-mono);
+  font-size: 0.62rem;
+  text-transform: lowercase;
+  color: var(--mm-text-muted);
+  background: var(--mm-bg-alt);
+  padding: 2px 7px;
+  border-radius: 2px;
+  border: 1px solid var(--mm-border);
+}
+
+/* (heatmap + repo card styles moved to inline \3c style> in head.liquid —
+   PurgeCSS strips dynamic classes; inline styles bypass it entirely) */
+
+/* highlighted stars */
+.mm-repo-stars { font-weight: 600; color: var(--mm-text); }
+
+/* FA icons in repo meta — bigger, monochrome */
+.mm-repo-meta .fa-star,
+.mm-repo-meta .fa-code-fork {
+  font-size: 0.95rem;
+  color: var(--mm-text);
+  margin-right: 1px;
+}
+
+/* ---------- 12b. Static user card ---------- */
+.mm-user-card {
+  border: 1px solid var(--mm-border);
+  border-radius: 3px;
+  padding: 1.5rem 1.8rem;
+  background: var(--mm-bg);
+  transition: border-color .3s ease;
+  min-width: 260px;
+}
+.mm-user-card:hover { border-color: var(--mm-text); }
+.mm-user-link { color: inherit; display: block; }
+.mm-user-link:hover { opacity: 1; }
+.mm-user-head { margin-bottom: 1rem; }
+.mm-user-login {
+  display: block;
+  font-family: var(--mm-serif);
+  font-weight: 600;
+  font-size: 1.3rem;
+}
+.mm-user-handle {
+  font-family: var(--mm-mono);
+  font-size: 0.78rem;
+  color: var(--mm-text-muted);
+}
+.mm-user-stats { display: flex; gap: 2rem; }
+.mm-user-stat { display: flex; flex-direction: column; }
+.mm-stat-num {
+  font-family: var(--mm-serif);
+  font-size: 1.8rem;
+  font-weight: 600;
+  line-height: 1;
+}
+.mm-stat-label {
+  font-family: var(--mm-mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--mm-text-faint);
+  margin-top: 0.3rem;
+}
+
+/* repo grid layout */
+div.repositories {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+div.repositories > div { width: 100% !important; }
+.mm-deck {
+  font-family: 'Cormorant', var(--mm-serif) !important;
+  font-style: italic;
+  font-size: 1.35rem !important;
+  line-height: 1.45;
+  color: var(--mm-text-muted);
+  max-width: 32em;
+}
+.mm-deck a { text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------- 4c. Blog page utilities ---------- */
+.header-bar { margin: 1rem 0 2.5rem; }
+.header-bar h1 {
+  font-family: var(--mm-serif);
+  font-weight: 500;
+  font-size: clamp(2rem, 5vw, 3rem);
+  letter-spacing: -0.03em;
+}
+.header-bar h2 {
+  font-family: var(--mm-sans);
+  font-size: 0.85rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--mm-text-muted);
+  text-transform: none;
+  border: none;
+  margin-top: 0.4rem;
+}
+/* blog archive / filter bar */
+.mm-filterbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.4rem;
+  align-items: center;
+  font-family: var(--mm-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mm-text-muted);
+  padding: 0.7rem 0;
+  border-top: 1px solid var(--mm-border);
+  border-bottom: 1px solid var(--mm-border);
+  margin-bottom: 2.5rem;
+}
+.mm-filterbar a { color: inherit; position: relative; }
+.mm-filterbar a::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -3px;
+  height: 1px;
+  background: var(--mm-text);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .3s ease;
+}
+.mm-filterbar a:hover { color: var(--mm-text); }
+.mm-filterbar a:hover::after { transform: scaleX(1); }
+.post-list { list-style: none; padding: 0; }
+.post-list > li { padding: 1.5rem 0; border-bottom: 1px solid var(--mm-border); }
+.post-meta {
+  font-family: var(--mm-mono);
+  font-size: 0.72rem;
+  color: var(--mm-text-faint);
+  letter-spacing: 0.03em;
+}
+
+/* section headings inside article — quiet uppercase eyebrows */
+article h2 {
+  font-family: var(--mm-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--mm-text-faint);
+  margin: 3.5rem 0 1.25rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--mm-border);
+}
+article h2 a { color: inherit; }
+article h3 { font-size: 1.25rem; margin-top: 2rem; }
+
+/* body copy refinement */
+article { font-size: 1.02rem; }
+article p { line-height: 1.75; }
+
+/* profile image — sharp corners, no depth shadow */
+.profile img { border-radius: 2px; box-shadow: none !important; }
+.more-info { font-size: 0.85rem; color: var(--mm-text-muted); line-height: 1.6; }
+
+/* ---------- 5. Publications / cards — magazine index ---------- */
+div.publications > div { border-bottom: 1px solid var(--mm-border); }
+
+/* bibliography entries: strip depth shadow, lean on the rule */
+.z-depth-1 { box-shadow: none !important; }
+
+/* ---------- 6. Social / contact ---------- */
+.social .contact-icons a {
+  color: var(--mm-text-muted);
+  margin-right: 0.9rem;
+  font-size: 1rem;
+  transition: color .25s ease;
+}
+.social .contact-icons a:hover { color: var(--mm-text); opacity: 1; }
+.contact-note { font-size: 0.85rem; color: var(--mm-text-faint); margin-top: 0.5rem; }
+
+/* ---------- 7. Footer (true page-end footer, never floating) ---------- */
+
+footer.sticky-bottom {
+  background: var(--mm-bg);
+  border-top: 1px solid var(--mm-border);
+  box-shadow: none !important;
+  font-size: 0.78rem;
+  color: var(--mm-text-faint);
+  letter-spacing: 0.02em;
+  padding: 1rem 0;
+  margin-top: auto;
+}
+footer a { color: var(--mm-text-muted); }
+footer a:hover { color: var(--mm-text); opacity: 1; }
+
+/* ---------- 8. Misc chrome ---------- */
+#progress { color: var(--mm-text); }
+
+/* ---------- 8b. Bookshelf review badge ---------- */
+figure.cover { position: relative; display: inline-block; }
+.mm-review-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 5;
+  font-family: var(--mm-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--mm-text);
+  padding: 4px 8px;
+  border-radius: 2px;
+  opacity: 0.92;
+  transition: opacity .2s ease;
+  text-decoration: none;
+}
+.mm-review-badge:hover { opacity: 1; color: #fff; }
+.mm-review-badge i { margin-right: 3px; }
+
+code, pre {
+  font-family: var(--mm-mono);
+  font-size: 0.86em;
+  background: var(--mm-bg-alt);
+}
+pre { border: 1px solid var(--mm-border); border-radius: 3px; }
+
+blockquote {
+  border-left: 2px solid var(--mm-text);
+  padding-left: 1.2rem;
+  font-family: var(--mm-serif);
+  font-style: italic;
+  color: var(--mm-text-muted);
+}
+
+hr { border: none; border-top: 1px solid var(--mm-border); margin: 3rem 0; }
+
+/* tables — hairline */
+table { border-collapse: collapse; }
+th, td { border-bottom: 1px solid var(--mm-border); padding: 0.6rem 0.8rem; }
+th { font-weight: 600; border-bottom: 1px solid var(--mm-border-mid); }
+
+/* ---------- 9. Scroll reveal (progressive enhancement) ---------- */
+/* only hides once JS signals readiness → content stays visible if JS fails */
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
+
+/* ---------- 10. Entrance animation (pure CSS, no FOUC) ---------- */
+@keyframes mm-fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.post-header { animation: mm-fade-up .9s cubic-bezier(.2, .8, .2, 1) both; }
+.post-header .desc { animation: mm-fade-up .9s cubic-bezier(.2, .8, .2, 1) .14s both; }
+
+/* ---------- 11. Headline motion + typewriter ---------- */
+/* enter from left, then perpetual gentle horizontal float */
+@keyframes mm-enter-left {
+  from { opacity: 0; transform: translateX(-30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes mm-float-x {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(7px); }
+}
+
+/* typewriter line — mono, sits below the headline */
