@@ -56,7 +56,9 @@ jobs:
       - name: Checkout sTBook 📚
         run: git clone --depth 1 https://github.com/smartThise/sTBook.git _notes_src
       - name: Sync notes wiki 🔄
-        run: python3 scripts/sync_notes.py --no-pull
+        run: |
+          pip3 install pyyaml
+          python3 scripts/sync_notes.py --no-pull
       - name: Install and Build 🔧
         run: |
           sudo apt-get update && sudo apt-get install -y imagemagick
