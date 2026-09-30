@@ -1,0 +1,42 @@
+=================================================================
+==13758==ERROR: AddressSanitizer: global-buffer-overflow on address 0x0001036ee780 at pc 0x000103f61fe0 bp 0x00016d65a3e0 sp 0x00016d659b60
+WRITE of size 4 at 0x0001036ee780 thread T0
+    #0 0x000103f61fdc in scanf_common(void*, int, bool, char const*, char*)+0x7cc (libclang_rt.asan_osx_dynamic.dylib:arm64e+0x1dfdc)
+    #1 0x000103f62490 in scanf+0x68 (libclang_rt.asan_osx_dynamic.dylib:arm64e+0x1e490)
+    #2 0x0001027a4ca8 in main solution_1.cpp:10
+    #3 0x00018bf5c4e0 in start+0x1b4c (dyld:arm64e+0x204e0)
+
+0x0001036ee780 is located 0 bytes after global variable 'matrix' defined in 'solution_1.cpp' (0x0001027ac380) of size 16000000
+SUMMARY: AddressSanitizer: global-buffer-overflow solution_1.cpp:10 in main
+Shadow bytes around the buggy address:
+  0x0001036ee500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0001036ee580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0001036ee600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0001036ee680: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0001036ee700: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0001036ee780:[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0001036ee800: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0001036ee880: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0001036ee900: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0001036ee980: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0001036eea00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==13758==ABORTING

@@ -1,0 +1,44 @@
+[dbg] n=4 m=4
+[dbg] q=4
+[dbg] --- query #1: x=1 y=1 a=1 b=1, sum(入口)=0
+[dbg]   q1 += matrix[1][1] = 1  (sum: 0 -> 1)
+[dbg] q1 结束: 累加器 sum=1  本次询问真实和 local=1  差=0
+[dbg] --- query #2: x=1 y=3 a=4 b=2, sum(入口)=1
+[dbg]   q2 += matrix[1][3] = 3  (sum: 1 -> 4)
+[dbg]   q2 += matrix[1][4] = 4  (sum: 4 -> 8)
+[dbg]   q2 += matrix[2][3] = 7  (sum: 8 -> 15)
+[dbg]   q2 += matrix[2][4] = 8  (sum: 15 -> 23)
+[dbg]   q2 += matrix[3][3] = 2  (sum: 23 -> 25)
+[dbg]   q2 += matrix[3][4] = 1  (sum: 25 -> 26)
+[dbg]   q2 += matrix[4][3] = 7  (sum: 26 -> 33)
+[dbg]   q2 += matrix[4][4] = 6  (sum: 33 -> 39)
+[dbg] q2 结束: 累加器 sum=39  本次询问真实和 local=38  差=1
+[dbg] --- query #3: x=2 y=2 a=3 b=3, sum(入口)=39
+[dbg]   q3 += matrix[2][2] = 6  (sum: 39 -> 45)
+[dbg]   q3 += matrix[2][3] = 7  (sum: 45 -> 52)
+[dbg]   q3 += matrix[2][4] = 8  (sum: 52 -> 60)
+[dbg]   q3 += matrix[3][2] = 3  (sum: 60 -> 63)
+[dbg]   q3 += matrix[3][3] = 2  (sum: 63 -> 65)
+[dbg]   q3 += matrix[3][4] = 1  (sum: 65 -> 66)
+[dbg]   q3 += matrix[4][2] = 8  (sum: 66 -> 74)
+[dbg]   q3 += matrix[4][3] = 7  (sum: 74 -> 81)
+[dbg]   q3 += matrix[4][4] = 6  (sum: 81 -> 87)
+[dbg] q3 结束: 累加器 sum=87  本次询问真实和 local=48  差=39
+[dbg] --- query #4: x=1 y=1 a=4 b=4, sum(入口)=87
+[dbg]   q4 += matrix[1][1] = 1  (sum: 87 -> 88)
+[dbg]   q4 += matrix[1][2] = 2  (sum: 88 -> 90)
+[dbg]   q4 += matrix[1][3] = 3  (sum: 90 -> 93)
+[dbg]   q4 += matrix[1][4] = 4  (sum: 93 -> 97)
+[dbg]   q4 += matrix[2][1] = 5  (sum: 97 -> 102)
+[dbg]   q4 += matrix[2][2] = 6  (sum: 102 -> 108)
+[dbg]   q4 += matrix[2][3] = 7  (sum: 108 -> 115)
+[dbg]   q4 += matrix[2][4] = 8  (sum: 115 -> 123)
+[dbg]   q4 += matrix[3][1] = 4  (sum: 123 -> 127)
+[dbg]   q4 += matrix[3][2] = 3  (sum: 127 -> 130)
+[dbg]   q4 += matrix[3][3] = 2  (sum: 130 -> 132)
+[dbg]   q4 += matrix[3][4] = 1  (sum: 132 -> 133)
+[dbg]   q4 += matrix[4][1] = 9  (sum: 133 -> 142)
+[dbg]   q4 += matrix[4][2] = 8  (sum: 142 -> 150)
+[dbg]   q4 += matrix[4][3] = 7  (sum: 150 -> 157)
+[dbg]   q4 += matrix[4][4] = 6  (sum: 157 -> 163)
+[dbg] q4 结束: 累加器 sum=163  本次询问真实和 local=76  差=87

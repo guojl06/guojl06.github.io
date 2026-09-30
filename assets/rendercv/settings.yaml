@@ -1,0 +1,10 @@
+# for details on settings, see https://docs.rendercv.com/user_guide/yaml_input_structure/settings/
+settings:
+  render_command:
+    design: ../assets/rendercv/design.yaml
+    locale: ../assets/rendercv/locale.yaml
+    output_folder: ../assets/rendercv/rendercv_output
+    dont_generate_markdown: true
+    dont_generate_html: true
+    dont_generate_png: true
+  bold_keywords: []

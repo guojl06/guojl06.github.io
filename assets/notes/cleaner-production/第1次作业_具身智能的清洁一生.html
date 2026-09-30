@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>具身智能产业链的清洁一生 · 清洁生产13322</title>
+<style>
+  @page { size: 297mm 210mm; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html, body { width: 297mm; height: 210mm; background: #F7F4EC; }
+  body { font-family: "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", sans-serif; color: #22362C; }
+
+  :root {
+    --paper: #F7F4EC;
+    --card:  #FDFCF6;
+    --ink:   #22362C;
+    --soft:  #5C7263;
+    --faint: #8CA093;
+    --hair:  rgba(34, 54, 44, .32);
+    --hair2: rgba(34, 54, 44, .15);
+    --pine:  #2E6B52;
+    --pinedeep: #1F4A38;
+    --tint:  #E2E9DE;
+    --grey:  #EFEDE3;
+    --cinnabar: #B5482A;
+  }
+
+  .stage { width: 1122px; height: 793px; padding: 24px 30px 14px;
+           display: flex; flex-direction: column; overflow: hidden; position: relative; }
+
+  /* ============ HEADER ============ */
+  header { display: flex; justify-content: space-between; align-items: stretch; }
+  .head-left { width: 600px; }
+  .eyebrow { font-size: 8.5px; letter-spacing: .32em; color: var(--soft); display: flex; align-items: center; gap: 10px; }
+  .eyebrow::before { content: ""; width: 26px; height: 1px; background: var(--hair); }
+  h1 { font-family: "Songti SC", "STSong", "Noto Serif CJK SC", serif; font-weight: 700;
+       font-size: 33px; letter-spacing: .06em; margin: 5px 0 6px; line-height: 1.12; }
+  h1 .thin { font-weight: 400; }
+  .subtitle .row1 { display: flex; align-items: center; gap: 9px; font-size: 10.5px; color: var(--soft); letter-spacing: .05em; }
+  .subtitle .row2 { margin-top: 4px; font-style: italic; color: var(--faint); font-size: 8.5px; letter-spacing: .03em; }
+  .seal { display: inline-flex; width: 17px; height: 17px; background: var(--cinnabar); color: #FBF6EC;
+          border-radius: 2.5px; align-items: center; justify-content: center;
+          font-family: "Songti SC", serif; font-size: 8px; line-height: 1.05; text-align: center;
+          letter-spacing: 0; padding: 1.5px; flex: none; }
+
+  .code-strip { display: flex; width: 486px; }
+  .code-cell { flex: 1; padding: 2px 10px 0 12px; border-left: 1px solid var(--hair2); }
+  .code-num { font-family: "Didot", "Times New Roman", serif; font-size: 29px; line-height: 1; color: var(--cinnabar); }
+  .code-t { font-size: 9.5px; font-weight: 600; margin-top: 3px; letter-spacing: .06em; }
+  .code-s { font-size: 7.5px; color: var(--soft); margin-top: 2px; line-height: 1.4; letter-spacing: .02em; }
+
+  .rule { height: 1px; background: var(--hair); margin: 9px 0 7px; }
+
+  /* ============ LEGEND ============ */
+  .legend { display: flex; align-items: center; gap: 14px; font-size: 8.5px; color: var(--soft);
+            letter-spacing: .05em; margin-bottom: 3px; }
+  .legend .lg-title { font-weight: 700; color: var(--ink); letter-spacing: .18em; font-size: 8px; }
+  .legend .chip { display: inline-flex; align-items: center; gap: 5px; }
+  .badge { width: 13px; height: 13px; border-radius: 3px; background: var(--pine); color: #F5F2E8;
+           font-size: 8px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex: none; }
+  .legend .src { margin-left: auto; font-size: 7.5px; color: var(--faint); letter-spacing: .08em; }
+
+  /* ============ FLOWCHART ============ */
+  .flow { position: relative; width: 1062px; height: 612px; flex: none; }
+  .flow > * { position: absolute; z-index: 2; }
+  .flow svg.wires { position: absolute; inset: 0; z-index: 1; }
+
+  /* column header bars */
+  .hbar { height: 30px; border-radius: 5px; background: var(--pine); color: #F7F5EC;
+          display: flex; align-items: center; gap: 7px; padding: 0 10px; overflow: hidden; }
+  .hbar .cn { font-size: 12px; font-weight: 700; letter-spacing: .1em; white-space: nowrap; }
+  .hbar .en { font-size: 6px; letter-spacing: .14em; opacity: .78; margin-top: 1px; white-space: nowrap; }
+  .hbar .badge { background: #F7F5EC; color: var(--pine); margin-left: auto; }
+  .hbar.ink { background: var(--ink); }
+  .hbar.ink .badge { color: var(--ink); }
+  .hbar.ghost { background: transparent; border: 1.5px solid var(--pine); color: var(--pine); }
+  .hbar.ghost .en { opacity: .6; }
+  .hbar.deep { background: var(--pinedeep); }
+
+  /* plain item card */
+  .item { background: var(--card); border: 1px solid var(--hair); border-radius: 4.5px;
+          padding: 6px 9px 5px; box-shadow: 0 1px 0 rgba(34,54,44,.05); }
+  .item .t { font-size: 9px; font-weight: 600; letter-spacing: .03em; display: flex; align-items: center; }
+  .item .t::before { content: ""; width: 3px; height: 3px; border-radius: 50%;
+                     background: var(--pine); margin-right: 6px; flex: none; }
+  .item .s { font-size: 7.5px; color: var(--soft); margin-top: 2.5px; line-height: 1.45; letter-spacing: .02em; padding-left: 9px; }
+
+  /* sub header (B/C) */
+  .subh { height: 22px; border-radius: 4px; background: var(--tint); color: var(--pinedeep);
+          display: flex; align-items: center; gap: 6px; padding: 0 8px;
+          font-size: 9.5px; font-weight: 700; letter-spacing: .1em; }
+
+  /* big container */
+  .container { position: absolute; border: 1.5px solid var(--pine); border-radius: 7px;
+               background: rgba(226, 233, 222, .28); }
+
+  /* product box */
+  .product { background: var(--tint); border: 1.6px solid var(--ink); border-radius: 6px;
+             display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 0 14px; }
+  .product .lab { display: flex; align-items: baseline; gap: 8px; }
+  .product .cn { font-family: "Songti SC", serif; font-size: 13.5px; font-weight: 700; letter-spacing: .3em; }
+  .product .en { font-size: 6.5px; letter-spacing: .26em; color: var(--soft); }
+  .product .eq { font-size: 8.5px; font-weight: 600; letter-spacing: .03em; color: var(--ink); white-space: nowrap; }
+  .product .eq b { color: var(--pine); }
+
+  /* E loop boxes */
+  .loopbox { background: #FFFFFF; border: 1.2px solid var(--pine); border-radius: 5px; padding: 7px 10px 6px; }
+  .loopbox .t { font-size: 9.5px; font-weight: 700; color: var(--pine); letter-spacing: .1em; }
+  .loopbox .s { font-size: 7.5px; color: var(--soft); margin-top: 3px; line-height: 1.45; }
+
+  /* hierarchy steps */
+  .step { height: 30px; border-radius: 4px; display: flex; align-items: center; justify-content: center;
+          font-size: 9px; font-weight: 600; letter-spacing: .08em; }
+  .step.solid { background: var(--pine); color: #F5F2E8; }
+  .step.tint  { background: var(--tint); color: var(--pinedeep); border: 1px solid rgba(46,107,82,.4); }
+  .step.grey  { background: var(--grey); color: var(--soft); border: 1px dashed rgba(34,54,44,.28); }
+
+  .kick { display: flex; align-items: center; gap: 8px; font-size: 8.5px; font-weight: 700;
+          letter-spacing: .18em; color: var(--ink); }
+  .kick::after { content: ""; flex: 1; height: 1px; background: var(--hair2); }
+  .kick .en { font-size: 6.5px; color: var(--faint); letter-spacing: .22em; font-weight: 400; }
+  .colnote { font-size: 7.5px; color: var(--soft); line-height: 1.5; letter-spacing: .02em; }
+  .colnote b { color: var(--pine); }
+  .cap { position: absolute; z-index: 2; font-size: 7px; color: var(--faint); letter-spacing: .04em; }
+  .cap b { color: var(--pine); font-weight: 600; }
+
+  .wlabel { position: absolute; z-index: 2; font-size: 7px; color: var(--faint); letter-spacing: .1em; }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <!-- ================= HEADER ================= -->
+  <header>
+    <div class="head-left">
+      <div class="eyebrow">清华大学 · 清洁生产导论（00050011） · 第一次作业 · 2026.09</div>
+      <h1>具身智能产业链的<span class="thin">清洁一生</span></h1>
+      <div class="subtitle">
+        <div class="row1"><span>以清洁生产「1-3-3-2-2」密码，重绘具身智能产业链的全景清洁生产流程图</span><span class="seal">清洁<br>生产</span></div>
+        <div class="row2">The Cleaner Life of an Embodied-Intelligence Supply Chain</div>
+      </div>
+    </div>
+    <div class="code-strip">
+      <div class="code-cell">
+        <div class="code-num">1</div>
+        <div class="code-t">一种战略</div>
+        <div class="code-s">综合、预防性的<br>环境战略</div>
+      </div>
+      <div class="code-cell">
+        <div class="code-num">3</div>
+        <div class="code-t">三重性质</div>
+        <div class="code-s">预防性 · 综合性<br>持续性</div>
+      </div>
+      <div class="code-cell">
+        <div class="code-num">3</div>
+        <div class="code-t">三类对象</div>
+        <div class="code-s">生产过程 · 产品<br>服务</div>
+      </div>
+      <div class="code-cell">
+        <div class="code-num">2</div>
+        <div class="code-t">提高效率</div>
+        <div class="code-s">提升生态效率<br>与整体效率</div>
+      </div>
+      <div class="code-cell">
+        <div class="code-num">2</div>
+        <div class="code-t">降低风险</div>
+        <div class="code-s">对人体健康<br>与生态环境</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="rule"></div>
+
+  <!-- ================= LEGEND ================= -->
+  <div class="legend">
+    <span class="lg-title">清洁生产五大实施途径</span>
+    <span class="chip"><span class="badge">A</span>改变原料与能源</span>
+    <span class="chip"><span class="badge">B</span>变革技术与工艺</span>
+    <span class="chip"><span class="badge">C</span>精进运行管理</span>
+    <span class="chip"><span class="badge">D</span>产品生态设计</span>
+    <span class="chip"><span class="badge">E</span>循环与再生利用</span>
+    <span class="src">框架：UNEP 生产过程图（课程第一讲）</span>
+  </div>
+
+  <!-- ================= FLOWCHART ================= -->
+  <div class="flow">
+    <svg class="wires" width="1062" height="612" viewBox="0 0 1062 612" fill="none">
+      <defs>
+        <marker id="arr" viewBox="0 0 8 8" refX="6.5" refY="4" markerWidth="7.5" markerHeight="7.5" orient="auto">
+          <path d="M0.5,0.8 L7,4 L0.5,7.2" stroke="#22362C" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+        <marker id="arr-p" viewBox="0 0 8 8" refX="6.5" refY="4" markerWidth="8" markerHeight="8" orient="auto">
+          <path d="M0.5,0.8 L7,4 L0.5,7.2" stroke="#2E6B52" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+
+      <!-- main forward flow -->
+      <g stroke="#22362C" stroke-width="1.5" fill="none" marker-end="url(#arr)">
+        <line x1="180" y1="160" x2="212" y2="160"/>
+        <line x1="588" y1="347" x2="614" y2="347"/>
+        <path d="M 808 335 L 821 335 L 821 162 L 831 162"/>
+      </g>
+
+      <!-- design feeds product; service flows to waste -->
+      <g stroke="#22362C" stroke-width="1.1" stroke-dasharray="3 3" marker-end="url(#arr)">
+        <line x1="713" y1="290" x2="713" y2="312"/>
+        <line x1="950" y1="234" x2="950" y2="248"/>
+      </g>
+
+      <!-- process emissions to waste -->
+      <path d="M 402 368 C 402 452, 620 452, 831 303" stroke="#22362C" stroke-opacity=".55"
+            stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#arr)"/>
+
+      <!-- closing the loop (pine dashed) -->
+      <g stroke="#2E6B52" stroke-width="1.4" stroke-dasharray="6 5" fill="none">
+        <path d="M 432 500 C 484 442, 566 406, 626 382" marker-end="url(#arr-p)"/>
+        <path d="M 240 500 C 282 440, 378 400, 416 372" marker-end="url(#arr-p)"/>
+        <path d="M 58 500 C 36 436, 76 356, 88 294" marker-end="url(#arr-p)"/>
+      </g>
+    </svg>
+
+    <!-- ============ COL A · 原料输入 ============ -->
+    <div class="hbar" style="left:0; top:28px; width:180px;">
+      <span class="cn">原料输入</span><span class="en">UPSTREAM · 上游</span><span class="badge">A</span>
+    </div>
+    <div class="item" style="left:0; top:66px; width:180px; height:50px;">
+      <div class="t">关键矿物</div>
+      <div class="s">稀土永磁 · 锂 · 钴 · 镍（电池与电机）</div>
+    </div>
+    <div class="item" style="left:0; top:124px; width:180px; height:50px;">
+      <div class="t">金属与硅料</div>
+      <div class="s">铜（绕组线缆）· 铝（结构件）· 硅（芯片）</div>
+    </div>
+    <div class="item" style="left:0; top:182px; width:180px; height:50px;">
+      <div class="t">更清洁的替代</div>
+      <div class="s">再生铝 · 再生稀土 · 绿电冶炼与绿电硅料</div>
+    </div>
+    <div class="item" style="left:0; top:240px; width:180px; height:50px;">
+      <div class="t">源头无害化</div>
+      <div class="s">无卤阻燃 · 无 PFAS · 低毒低害辅材</div>
+    </div>
+
+    <div class="wlabel" style="left:178px; top:146px;">清洁</div>
+
+    <!-- ============ COL B · 生产过程 ============ -->
+    <div class="container" style="left:216px; top:28px; width:372px; height:340px;"></div>
+    <div class="hbar deep" style="left:216px; top:28px; width:372px; height:28px; border-radius:6px 6px 0 0;">
+      <span class="cn">生产过程</span><span class="en">PROCESSES · 中游：零部件 — 总装 — 训练</span>
+    </div>
+    <div class="subh" style="left:228px; top:64px; width:172px;"><span class="badge">B</span>技术革新</div>
+    <div class="subh" style="left:404px; top:64px; width:172px;"><span class="badge">C</span>运行管理</div>
+
+    <div class="item" style="left:228px; top:92px; width:172px; height:48px;">
+      <div class="t">近净成形</div>
+      <div class="s">精密少切削 · 少废液 · 少边角料</div>
+    </div>
+    <div class="item" style="left:228px; top:146px; width:172px; height:48px;">
+      <div class="t">高效集成</div>
+      <div class="s">高能效芯片 · 一体化关节模组</div>
+    </div>
+    <div class="item" style="left:228px; top:200px; width:172px; height:48px;">
+      <div class="t">电池工艺革新</div>
+      <div class="s">干法电极 · 固态电解质产线</div>
+    </div>
+    <div class="item" style="left:228px; top:254px; width:172px; height:48px;">
+      <div class="t">数字孪生</div>
+      <div class="s">虚拟调试 · 仿真训练，少造实物样机</div>
+    </div>
+
+    <div class="item" style="left:404px; top:92px; width:172px; height:48px;">
+      <div class="t">绿电算力</div>
+      <div class="s">「大脑」训练削峰填谷 · 算力调度</div>
+    </div>
+    <div class="item" style="left:404px; top:146px; width:172px; height:48px;">
+      <div class="t">预测性维护</div>
+      <div class="s">设备少停机 · 少故障 · 少次品</div>
+    </div>
+    <div class="item" style="left:404px; top:200px; width:172px; height:48px;">
+      <div class="t">能碳过程控制</div>
+      <div class="s">计量 · 清单分析 · 对标持续改进</div>
+    </div>
+    <div class="item" style="left:404px; top:254px; width:172px; height:48px;">
+      <div class="t">人员与规程</div>
+      <div class="s">操作培训 · 现场管理与保持</div>
+    </div>
+
+    <div class="item" style="left:228px; top:312px; width:348px; height:44px; background:transparent; border-style:dashed;">
+      <div class="t">链条产出：零部件 → 本体总装 →「大脑」模型训练</div>
+      <div class="s">训练即生产——算力、电力与数据同样是过程投入</div>
+    </div>
+
+    <!-- ============ COL C · 产品设计 / 产品 ============ -->
+    <div class="hbar" style="left:618px; top:28px; width:190px;">
+      <span class="cn">产品设计</span><span class="en">DESIGN · 设计</span><span class="badge">D</span>
+    </div>
+    <div class="item" style="left:618px; top:66px; width:190px; height:50px;">
+      <div class="t">模块化</div>
+      <div class="s">标准接口 · 易拆解 · 易维修</div>
+    </div>
+    <div class="item" style="left:618px; top:124px; width:190px; height:50px;">
+      <div class="t">可延寿</div>
+      <div class="s">OTA 升级 · 关节模组单独更换</div>
+    </div>
+    <div class="item" style="left:618px; top:182px; width:190px; height:50px;">
+      <div class="t">轻量化</div>
+      <div class="s">一体压铸 · 拓扑优化 · 减重省料</div>
+    </div>
+    <div class="item" style="left:618px; top:240px; width:190px; height:50px;">
+      <div class="t">低功耗</div>
+      <div class="s">关节按需供能 · 减过度包装</div>
+    </div>
+
+    <div class="product" style="left:618px; top:316px; width:190px; height:62px;">
+      <div class="lab"><span class="cn">产品</span><span class="en">PRODUCT</span></div>
+      <div class="eq">具身智能整机＝<b>本体＋小脑＋大脑</b></div>
+    </div>
+
+    <!-- ============ COL D · 服务 / 废弃物 ============ -->
+    <div class="hbar ghost" style="left:838px; top:28px; width:224px;">
+      <span class="cn">场景服务</span><span class="en">SERVICE · 下游</span>
+    </div>
+    <div class="colnote" style="left:838px; top:62px; width:224px;">在服务中融入环境考量——<b>UNEP 定义的第三类作用对象「服务」</b></div>
+    <div class="item" style="left:838px; top:84px; width:224px; height:48px;">
+      <div class="t">机器人即服务 RaaS</div>
+      <div class="s">一机多用 · 租赁共享，摊薄隐含碳</div>
+    </div>
+    <div class="item" style="left:838px; top:138px; width:224px; height:48px;">
+      <div class="t">替代效应</div>
+      <div class="s">顶替高危 · 高污 · 重复枯燥作业</div>
+    </div>
+    <div class="item" style="left:838px; top:192px; width:224px; height:48px;">
+      <div class="t">高效运行</div>
+      <div class="s">任务调度优化 · 闲时深度休眠</div>
+    </div>
+
+    <div class="hbar ink" style="left:838px; top:252px; width:224px; height:24px;">
+      <span class="cn" style="font-size:10px;">废弃物和排放</span><span class="en">WASTE &amp; EMISSIONS</span>
+    </div>
+    <div class="item" style="left:838px; top:284px; width:224px; height:44px;">
+      <div class="t">生产端</div>
+      <div class="s">废热 · 废液 · 边角料 · 次品</div>
+    </div>
+    <div class="item" style="left:838px; top:334px; width:224px; height:44px;">
+      <div class="t">使用与退役</div>
+      <div class="s">磨损部件 · 报废整机 · 退役电池</div>
+    </div>
+
+    <!-- ============ BOTTOM LEFT · 循环闭环 ============ -->
+    <div class="hbar deep" style="left:0; top:470px; width:462px; height:26px;">
+      <span class="cn" style="font-size:11px;">循环与再生</span><span class="en">CLOSE THE LOOP · 变废为宝，让链条闭合成环</span><span class="badge">E</span>
+    </div>
+    <div class="loopbox" style="left:8px; top:504px; width:142px; height:56px;">
+      <div class="t">再利用</div>
+      <div class="s">整机二手流转 · 跨场景租赁互通</div>
+    </div>
+    <div class="loopbox" style="left:160px; top:504px; width:142px; height:56px;">
+      <div class="t">再制造</div>
+      <div class="s">关节模组翻新 → 回到生产过程</div>
+    </div>
+    <div class="loopbox" style="left:312px; top:504px; width:142px; height:56px;">
+      <div class="t">再循环</div>
+      <div class="s">稀土 · 锂 · 钴再生 → 回到原料</div>
+    </div>
+
+    <div class="wlabel" style="left:120px; top:640px; display:none;"></div>
+
+    <!-- ============ BOTTOM RIGHT · 污染预防层级 ============ -->
+    <div class="kick" style="left:600px; top:470px; width:462px;">污染预防层级<span class="en">POLLUTION PREVENTION HIERARCHY</span></div>
+    <div class="step solid" style="left:600px; top:498px; width:84px;">源头削减</div>
+    <div class="step tint"  style="left:691px; top:510px; width:84px;">再利用或循环</div>
+    <div class="step grey"  style="left:782px; top:522px; width:84px;">能量回收</div>
+    <div class="step grey"  style="left:873px; top:534px; width:84px;">废物处理</div>
+    <div class="step grey"  style="left:964px; top:546px; width:84px;">安全处置</div>
+    <div class="cap" style="left:600px; top:586px; width:462px;">阶梯越靠前越优先：<b>深色两级是清洁生产的主场</b>，浅色三级是末端兜底（美国《污染预防法》1990 · 课程第一讲）</div>
+  </div>
+
+</div>
+</body>
+</html>

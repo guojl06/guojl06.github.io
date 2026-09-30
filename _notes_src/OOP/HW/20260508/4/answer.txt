@@ -1,0 +1,72 @@
+[magic=1234] Weapon created: CrystalSword
+Somber weapon CrystalSword was created.
+You don't have the right!
+[magic=1234] Weapon created: ShortSord
+Normal weapon ShortSord was created.
+[magic=1234] Smithing stone 1 was created
+Normal smithing stone 1 was created.
+[magic=1234] Smithing stone 1 from 0 to 12
+Normal smithing stone 1 was added with 12.
+Upgrade failed for lacking normal smithing stone 2.
+[magic=1234] Smithing stone 1 from 12 to 10
+Normal smithing stone 1 was subtracted with 2.
+[magic=1234] Weapon upgraded: ShortSord
+Normal weapon ShortSord was upgraded to ShortSord+1.
+[magic=1234] Smithing stone 1 from 10 to 6
+Normal smithing stone 1 was subtracted with 4.
+[magic=1234] Weapon upgraded: ShortSord
+Normal weapon ShortSord+1 was upgraded to ShortSord+2.
+Upgrade ShortSord to ShortSord+2 Successfully.
+[magic=1234] Smithing stone 2 was created
+Normal smithing stone 2 was created.
+[magic=1234] Smithing stone 2 from 0 to 7
+Normal smithing stone 2 was added with 7.
+[magic=1234] Smithing stone 1 from 6 to 0
+Normal smithing stone 1 was subtracted with 6.
+Normal smithing stone 1 was destroyed.
+[magic=1234] Smithing stone 1(0) was destroyed
+[magic=1234] Weapon upgraded: ShortSord
+Normal weapon ShortSord+2 was upgraded to ShortSord+3.
+[magic=1234] Smithing stone 2 from 7 to 5
+Normal smithing stone 2 was subtracted with 2.
+[magic=1234] Weapon upgraded: ShortSord
+Normal weapon ShortSord+3 was upgraded to ShortSord+4.
+[magic=1234] Smithing stone 2 from 5 to 1
+Normal smithing stone 2 was subtracted with 4.
+[magic=1234] Weapon upgraded: ShortSord
+Normal weapon ShortSord+4 was upgraded to ShortSord+5.
+Upgrade ShortSord+2 to ShortSord+5 Successfully.
+Stay calm!
+[magic=1234] Smithing stone 1 was created
+Somber smithing stone 1 was created.
+[magic=1234] Smithing stone 1 from 0 to 2
+Somber smithing stone 1 was added with 2.
+[magic=1234] Smithing stone 2 was created
+Somber smithing stone 2 was created.
+[magic=1234] Smithing stone 2 from 0 to 1
+Somber smithing stone 2 was added with 1.
+[magic=1234] Smithing stone 3 was created
+Somber smithing stone 3 was created.
+[magic=1234] Smithing stone 3 from 0 to 1
+Somber smithing stone 3 was added with 1.
+[magic=1234] Smithing stone 1 from 2 to 1
+Somber smithing stone 1 was subtracted with 1.
+[magic=1234] Weapon upgraded: CrystalSword
+Somber weapon CrystalSword was upgraded to CrystalSword+1.
+[magic=1234] Smithing stone 2 from 1 to 0
+Somber smithing stone 2 was subtracted with 1.
+Somber smithing stone 2 was destroyed.
+[magic=1234] Smithing stone 2(0) was destroyed
+[magic=1234] Weapon upgraded: CrystalSword
+Somber weapon CrystalSword+1 was upgraded to CrystalSword+2.
+Upgrade CrystalSword to CrystalSword+2 Successfully.
+Normal smithing stone 2 was destroyed.
+[magic=1234] Smithing stone 2(1) was destroyed
+Somber smithing stone 1 was destroyed.
+[magic=1234] Smithing stone 1(1) was destroyed
+Somber smithing stone 3 was destroyed.
+[magic=1234] Smithing stone 3(1) was destroyed
+Normal weapon ShortSord+5 was destroyed.
+[magic=1234] Weapon destroyed: ShortSord
+Somber weapon CrystalSword+2 was destroyed.
+[magic=1234] Weapon destroyed: CrystalSword

@@ -1,0 +1,35 @@
+# sTBook 笔记库清单 —— 由个人网站同步脚本读取
+# slug = 文件夹名（URL 路径），name = 展示名，group = 分组
+# 未列出的文件夹不会出现在网站笔记模块中（共享目录 Assets/module 除外）
+
+title: sTBook · 学习笔记
+subtitle: 课程笔记 / 代码 / 资料库
+
+courses:
+  # ---- 在修课程 ----
+  - { slug: dsa,                 name: 数据结构与算法,   group: 课程, desc: Lab、编程作业与指引 }
+  - { slug: oop,                 name: 面向对象程序设计, group: 课程, desc: HW、final 项目、雷霆笔记与课件 }
+  - { slug: adv-linalg,          name: 高等线性代数,     group: 课程, desc: 作业与复习 }
+  - { slug: discrete-math,       name: 离散数学（二）,   group: 课程, desc: 笔记、OJ、slides 与复习 }
+  - { slug: automata,            name: 自动机,           group: 课程, desc: 作业 }
+  - { slug: physics,             name: 大学物理,         group: 课程, desc: 作业、考试与引擎模板 }
+  - { slug: va2,                 name: VA2,              group: 课程, desc: 作业与笔记 }
+  - { slug: zijing-cpp,          name: C++ 程序设计,     group: 课程, desc: OJ、HW 与 cheatsheet }
+  - { slug: writing,             name: 写作与沟通,       group: 课程, desc: 文章与作业 }
+  - { slug: cleaner-production,  name: 清洁生产导论,     group: 课程, desc: 讲义与作业 }
+  - { slug: ai4s,                name: 小学期 AI4S,      group: 课程, desc: 论文、slides 与项目 }
+  - { slug: steam-design,        name: STEAM 设计技术,   group: 课程, desc: 课程设计素材 }
+  - { slug: zijing-electives,    name: 紫荆院课,         group: 课程, desc: 作业与报告 }
+  - { slug: transfer-interview,  name: 转系面试,         group: 存档, desc: 面试材料与照片 }
+
+  # ---- 复习资料 ----
+  - { slug: exam-review,         name: 复习资料,         group: 复习, desc: 物理/离散期末复习、题库 }
+  - { slug: leilei,              name: 雷雷资料,         group: 复习, desc: 习题课与往年题 }
+
+  # ---- 模板 / 工具 / 杂项 ----
+  - { slug: templates,           name: 模板,             group: 工具, desc: 简历 Typst 模板 }
+  - { slug: tools,               name: 工具脚本,         group: 工具, desc: OJ→Markdown 转换等脚本 }
+  - { slug: misc,                name: 杂项,             group: 工具, desc: 日志等个人文件 }
+
+# 共享资源目录：不单独成页，但其文件可被笔记相对路径引用（保持仓库原样）
+shared_dirs: [Assets, module]

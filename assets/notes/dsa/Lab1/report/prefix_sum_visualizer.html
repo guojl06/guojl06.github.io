@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>二维前缀和可视化</title>
+<style>
+body{
+    font-family:"Microsoft YaHei",sans-serif;
+    background:#f5f6fa;
+    margin:20px;
+}
+h1{
+    text-align:center;
+}
+.panel{
+    background:white;
+    padding:15px;
+    border-radius:12px;
+    margin-bottom:20px;
+    box-shadow:0 2px 8px #ccc;
+}
+input,button{
+    padding:6px 10px;
+    margin:4px;
+}
+button{
+    cursor:pointer;
+}
+.tables{
+    display:flex;
+    gap:30px;
+    flex-wrap:wrap;
+}
+table{
+    border-collapse:collapse;
+}
+td{
+    width:55px;
+    height:45px;
+    text-align:center;
+    border:1px solid #999;
+    position:relative;
+}
+.head{
+    background:#eee;
+    font-weight:bold;
+}
+.value{
+    font-size:14px;
+}
+.prefix{
+    font-size:13px;
+    color:#555;
+}
+
+.current{
+    background:#ffcc66!important;
+}
+.dep{
+    background:#9ddcff!important;
+}
+.query{
+    background:#ff9999!important;
+}
+
+.info{
+    font-size:18px;
+    min-height:50px;
+    padding:10px;
+    background:#eef;
+    border-radius:8px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>二维前缀和可视化</h1>
+
+<div class="panel">
+n:
+<input id="n" value="6" type="number">
+m:
+<input id="m" value="8" type="number">
+
+<button onclick="generate()">随机生成</button>
+<button onclick="reset()">重置</button>
+
+<br>
+
+速度:
+<input id="speed" type="range" min="200" max="2000" value="800">
+
+<button onclick="step()">单步</button>
+<button onclick="play()">播放</button>
+
+</div>
+
+
+<div class="panel">
+
+查询:
+x=
+<input id="qx" value="2" type="number">
+
+y=
+<input id="qy" value="2" type="number">
+
+a=
+<input id="qa" value="3" type="number">
+
+b=
+<input id="qb" value="4" type="number">
+
+<button onclick="queryDemo()">开始查询演示</button>
+
+</div>
+
+
+<div class="panel">
+<div id="info" class="info">
+等待操作...
+</div>
+</div>
+
+
+<div class="tables">
+
+<div>
+<h3>原矩阵 v(i,j)</h3>
+<div id="matrix"></div>
+</div>
+
+
+<div>
+<h3>二维前缀和 ans[i][j]</h3>
+<div id="prefix"></div>
+</div>
+
+</div>
+
+
+
+<script>
+
+let n=6,m=8;
+
+let mat=[];
+let pre=[];
+
+let ci=1,cj=1;
+
+let timer=null;
+
+let mode="build";
+
+
+function generate(){
+
+    n=+document.getElementById("n").value;
+    m=+document.getElementById("m").value;
+
+    mat=[];
+
+    for(let i=0;i<n;i++){
+        mat[i]=[];
+        for(let j=0;j<m;j++){
+            mat[i][j]=Math.floor(Math.random()*19)-9;
+        }
+    }
+
+    reset();
+}
+
+
+
+function reset(){
+
+    pre=Array.from(
+        {length:n+1},
+        ()=>Array(m+1).fill(0)
+    );
+
+    ci=1;
+    cj=1;
+    mode="build";
+
+    draw();
+
+    info("准备计算 ans[1][1]");
+}
+
+
+
+function info(t){
+    document.getElementById("info").innerHTML=t;
+}
+
+
+
+function draw(){
+
+    drawMatrix();
+    drawPrefix();
+
+}
+
+
+
+function drawMatrix(){
+
+let html="<table>";
+
+for(let i=0;i<n;i++){
+
+html+="<tr>";
+
+for(let j=0;j<m;j++){
+
+let cls="";
+
+if(mode=="query" &&
+    queryCells.some(x=>x[0]==i+1&&x[1]==j+1))
+cls="query";
+
+
+html+=`
+<td class="${cls}">
+<div class="value">${mat[i][j]}</div>
+</td>`;
+
+}
+
+html+="</tr>";
+
+}
+
+html+="</table>";
+
+document.getElementById("matrix").innerHTML=html;
+
+}
+
+
+
+
+let highlights=[];
+
+
+
+function drawPrefix(){
+
+let html="<table>";
+
+for(let i=0;i<=n;i++){
+
+html+="<tr>";
+
+for(let j=0;j<=m;j++){
+
+let cls="";
+
+if(highlights.some(x=>x[0]==i&&x[1]==j))
+cls=i==ci&&j==cj?"current":"dep";
+
+
+html+=`
+<td class="${cls}">
+<div class="prefix">
+${pre[i][j]}
+</div>
+</td>`;
+
+}
+
+html+="</tr>";
+
+}
+
+html+="</table>";
+
+document.getElementById("prefix").innerHTML=html;
+
+}
+
+
+
+function step(){
+
+if(mode!="build") return;
+
+
+if(ci>n){
+    info("二维前缀和构造完成");
+    return;
+}
+
+
+let v=mat[ci-1][cj-1];
+
+let up=pre[ci-1][cj];
+let left=pre[ci][cj-1];
+let cross=pre[ci-1][cj-1];
+
+
+pre[ci][cj]=
+v+up+left-cross;
+
+
+highlights=[
+[ci,cj],
+[ci-1,cj],
+[ci,cj-1],
+[ci-1,cj-1]
+];
+
+
+draw();
+
+
+info(`
+计算:
+<br>
+ans[${ci}][${cj}]
+=
+${v}
++
+ans[${ci-1}][${cj}](${up})
++
+ans[${ci}][${cj-1}](${left})
+-
+ans[${ci-1}][${cj-1}](${cross})
+=
+${pre[ci][cj]}
+`);
+
+
+
+cj++;
+
+if(cj>m){
+    cj=1;
+    ci++;
+}
+
+}
+
+
+
+function play(){
+
+if(timer){
+clearInterval(timer);
+timer=null;
+return;
+}
+
+timer=setInterval(()=>{
+
+step();
+
+if(ci>n){
+clearInterval(timer);
+timer=null;
+}
+
+},+document.getElementById("speed").value);
+
+}
+
+
+
+let queryCells=[];
+
+
+
+function queryDemo(){
+
+mode="query";
+
+let x=+qx.value;
+let y=+qy.value;
+let a=+qa.value;
+let b=+qb.value;
+
+
+let A=[x+a-1,y+b-1];
+let B=[x-1,y+b-1];
+let C=[x+a-1,y-1];
+let D=[x-1,y-1];
+
+
+queryCells=[A,B,C,D];
+
+highlights=queryCells;
+
+
+draw();
+
+
+let value=
+pre[A[0]][A[1]]
+-pre[B[0]][B[1]]
+-pre[C[0]][C[1]]
++pre[D[0]][D[1]];
+
+
+let steps=[
+`
+取大矩形:
+ans[${A}] = ${pre[A[0]][A[1]]}
+`,
+`
+减去上方区域:
+- ans[${B}] = -${pre[B[0]][B[1]]}
+`,
+`
+减去左侧区域:
+- ans[${C}] = -${pre[C[0]][C[1]]}
+`,
+`
+加回重复减去区域:
++ ans[${D}] = +${pre[D[0]][D[1]]}
+<br>
+答案=${value}
+`
+];
+
+
+let k=0;
+
+let t=setInterval(()=>{
+
+info(steps[k]);
+
+k++;
+
+if(k==steps.length)
+clearInterval(t);
+
+
+},800);
+
+
+
+}
+
+
+
+generate();
+
+</script>
+
+</body>
+</html>

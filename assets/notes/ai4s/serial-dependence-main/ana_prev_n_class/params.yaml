@@ -1,0 +1,33 @@
+# ana_prev_n_class/params.yaml
+
+n_values: [-10,-5, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+
+
+
+# 评分合法范围（可改）
+rating_min: 1
+rating_max: 100
+
+# 显著性检验
+# - welch: Welch t-test（需要 scipy）
+# - permutation: 置换检验（不依赖 scipy，更稳健，推荐用于补充验证）
+test: welch
+
+# permutation 的参数（test=permutation 时生效）
+n_perm: 10000
+seed: 123
+
+# 图像输出
+save_png: true
+save_pdf: true
+dpi: 200
+
+# prev-class 切分阈值（可改）
+prevclass_bar:
+  prev_resp_high_min: 60   # high: r_{t-1} > 60
+  prev_resp_low_max: 40    # low:  r_{t-1} < 40
+
+error_mode: "se"
+plot_var_axis: true
+

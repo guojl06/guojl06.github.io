@@ -1,0 +1,2 @@
+solution_1.cpp:20:21: runtime error: signed integer overflow: 2147400000 + 100000 cannot be represented in type 'int'
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior solution_1.cpp:20:21 

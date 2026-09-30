@@ -1,0 +1,12 @@
+正确性
+1. songs.erase(it) it 失效，但循环仍执行 ++it，导致跳过后续元素或未定义行为。
+2. raw 裸指针被分别传入两个独立的 shared_ptr构造函数，两者各自有独立的引用计数，均为 1。析构时 raw 所指内存将被释放两次，触发未定义行为。
+3. std::move(song) 将 song内部指针为空，之后立即调用 song->display()会解引用空指针
+4. operator[] 是非 const 成员函数，在 const 方法中调用会导致编译错误。
+5.在基于范围的 for 循环遍历 songs 的同时对其执行push_back，可能触发 vector 扩容，导致迭代器失效
+
+运行效率
+6. Song(string t, string a, int d)及 PremiumSong构造函数均按值接收 string，调用时先拷贝一次，再在初始化列表中移动或再次拷贝，产生冗余拷贝。
+
+设计合理性
+7.void addSong(shared_ptr<Song> song) 按值传入会在每次调用时产生一次引用计数的增减，不符合智能指针的设计目的与功能。

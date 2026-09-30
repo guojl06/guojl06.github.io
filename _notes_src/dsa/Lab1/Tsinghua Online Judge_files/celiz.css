@@ -1,0 +1,145 @@
+.enable-navbar {
+    position: relative;
+    padding-top: 50px;
+}
+
+.scorebar {
+    margin-bottom: 0px;
+}
+
+.scorebar-text {
+    color: #222222;
+    width: 100%;
+    position: absolute;
+    top: 0px;
+    font-size: 12px;
+    text-align: center;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+
+.assignment-item {
+	padding: 19px; 
+	border-radius: 4px; 
+	margin-bottom: 20px;
+	background-color: #d5d5d5;
+}
+
+.course-score-summary-item {
+	padding: 19px;
+	border-radius: 4px;
+	margin-bottom: 20px;
+	background-color: #e8e8e8;
+}
+
+.course-score-summary-row {
+	display: flex;
+	align-items: center;
+	gap: 32px;
+	width: 100%;
+}
+
+.course-score-summary-block {
+	display: flex;
+	flex-direction: row;
+	align-items: baseline;
+	gap: 8px;
+}
+
+.course-score-summary-label {
+	font-size: 14px;
+	color: #666;
+	font-weight: normal;
+}
+
+.course-score-summary-value {
+	font-size: 20px;
+	font-weight: 600;
+	color: #333;
+}
+
+.course-score-summary-suffix {
+	font-size: 14px;
+	color: #666;
+	margin-left: 2px;
+}
+
+.course-score-summary-divider {
+	width: 1px;
+	height: 28px;
+	background-color: #bbb;
+	flex-shrink: 0;
+}
+
+.course-score-summary-spacer {
+	flex: 1;
+	min-width: 20px;
+}
+
+.course-score-summary-action {
+	flex-shrink: 0;
+}
+
+.assignment-item-far-deadline {
+	background-color: #dff0d8;
+}
+
+.assignment-item-near-deadline {
+	background-color: #FFBBAA;
+}
+
+.problem-item.active .well {
+	/*background-image: linear-gradient(to bottom,#f5f5ff 0,#e8e8ff 100%);*/
+    border: solid 4px;
+    border-color: #fff;
+}
+
+.submission-history-item .submission-history-detail {
+	display: none;
+}
+
+.submission-history-item:hover .submission-history-detail {
+    display: block;
+    width: 300px;
+    position: absolute;
+    top:1em;
+    left:4em;
+    z-index: 100;
+}
+
+.submission-history-item.submission-history-selected {
+    background-color: #9d6;
+    padding: 2px;
+}
+
+#assignment-tbody > tr > td {
+    vertical-align: middle;
+}
+
+#problemList {
+    background: #ebebeb;
+}
+
+.problem-div {
+    background: #989898;
+}
+
+.problem-div-text {
+    color: #fff;
+}
+
+.required-problem-div {
+    background: #bd2b1d;
+}
+
+.unfinished-problem-div {
+    background: #c1b919;
+}
+
+.finished-problem-div {
+    background: #16ac24;
+}
+
+/* avoid pre and code double padding caused by bootstrap and highlight.js */
+pre code.hljs {
+    padding: 0;
+}

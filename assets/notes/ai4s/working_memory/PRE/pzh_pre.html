@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLM前摄干扰 (PI) 实验</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:"Segoe UI",sans-serif;background:#1a1a2e;color:#e0e0e0;line-height:1.8;max-width:1100px;margin:0 auto;padding:60px 80px}
+  h1{font-size:2em;color:#fff;margin:48px 0 20px;padding-bottom:10px;border-bottom:2px solid #64b5f6}
+  h2{font-size:1.4em;color:#64b5f6;margin:36px 0 14px}
+  h3{font-size:1.1em;color:#ffb74d;margin:22px 0 10px}
+  p{margin:8px 0;font-size:0.95em}
+  .subtitle{color:#aaa;font-size:1em;margin:-12px 0 24px}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:0.9em}
+  th,td{padding:8px 14px;text-align:center;border:1px solid #333}
+  th{background:#2a2a4a;color:#64b5f6;font-weight:600}
+  td{background:#1e1e36}
+  .g{color:#66bb6a;font-weight:bold}.r{color:#ff6b6b;font-weight:bold}.y{color:#ffb74d;font-weight:bold}
+  .box{background:#2a2a4a;border-left:4px solid #64b5f6;padding:14px 22px;margin:14px 0;border-radius:4px}
+  .good{background:#1b3a2a;border-left:4px solid #66bb6a;padding:14px 22px;margin:14px 0;border-radius:4px}
+  .warn{background:#3a2a1b;border-left:4px solid #ffb74d;padding:14px 22px;margin:14px 0;border-radius:4px}
+  .flex{display:flex;gap:24px;margin:14px 0}
+  .flex>*{flex:1}
+  hr{border:none;border-top:1px solid #333;margin:40px 0}
+  .demo{background:#0d1b2a;border-radius:6px;padding:16px 20px;margin:10px 0;font-family:Consolas,monospace;font-size:0.83em;white-space:pre-wrap;overflow-x:auto;line-height:1.5}
+  .demo .sys{color:#64b5f6}.demo .npc{color:#ffb74d}.demo .q{color:#66bb6a}.demo .comment{color:#888}
+  ol,ul{padding-left:24px;margin:8px 0}
+  li{margin:4px 0;font-size:0.95em}
+  aside{color:#888;font-size:0.85em}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════ TITLE ══════════════════════════ -->
+<h1>大语言模型中的前摄干扰</h1>
+<p class="subtitle">Proactive Interference in Large Language Models &mdash; DeepSeek (deepseek-chat), temperature=0</p>
+
+<div class="box">
+  <b>研究问题</b>：LLM处理序列信息时，旧信息是否干扰新信息的提取？<br>
+  <b>范式</b>：警探接收N个目击者报告。每人带信誉度(1-5)，更新s个随机槽位。模型需为每个槽位选出最高信誉值。<br>
+  <b>PI指标</b>：低信誉旧值出现在回答中（cred&lt;gold = 真正PI）。
+</div>
+
+<!-- ══════════════════════════ PARADIGM ══════════════════════════ -->
+<h1>1. 实验范式：Slot-PI</h1>
+
+<h2>1.1 核心设计</h2>
+<ul>
+  <li><b>6个固定槽位</b>：height, clothing, hair, item, exit, time</li>
+  <li><b>每NPC</b>：带信誉度(1-5)，随机更新s个槽位，格式 <code>[Credibility: X/5] slot: value | slot: value</code></li>
+  <li><b>覆盖规则</b>：<code>cred_new &ge; cred_old</code> 即覆盖该槽位</li>
+  <li><b>无姓名</b>：仅信誉度区分，避免名字池不够</li>
+  <li><b>batch模式</b>：所有NPC一次性呈现，最后一句提问</li>
+</ul>
+
+<h2>1.2 Prompt示例 (s=2, 25 NPCs)</h2>
+<div class="demo"><span class="sys">[SYSTEM]
+You are a police detective. Multiple witnesses will report what they saw.
+Each witness has a CREDIBILITY RATING (1-5). Higher credibility = more trustworthy.
+
+CRITICAL: For each detail about the suspect, identify the MOST CREDIBLE
+witness who mentioned it. Then QUOTE that witness's EXACT WORDS —
+do NOT paraphrase, summarize, or reword.
+
+Reply concisely. Stay professional.</span>
+
+<span class="npc">[1] [Credibility: 3/5] height: about 5 foot 10 | clothing: a navy parka
+[2] [Credibility: 5/5] clothing: a black leather jacket | exit: the south stairwell
+[3] [Credibility: 2/5] hair: red, curly hair | height: about 6 foot 3
+...
+[25] [Credibility: 4/5] item: a brown briefcase | time: around 11:30pm</span>
+
+<span class="q">[Chief] "Detective, describe the suspect. For each detail, QUOTE the
+exact words of the MOST CREDIBLE witness. Do NOT paraphrase."</span>
+
+<span class="comment">[期望回答: 每个槽位引用最高信誉目击者的原话]</span></div>
+
+<h2>1.3 PI更新规则</h2>
+<div class="demo">NPC1 (cred=2): hair=X, height=A    → best: hair(c2, X), height(c2, A)
+NPC2 (cred=4): hair=Y, exit=B      → hair 4>=2→Y, height 保留A, exit: B
+NPC3 (cred=3): hair=Z, height=C    → hair 3&lt;4→保留Y, height 3>=2→C
+
+最终 gold = 每个槽位最高信誉NPC的值</div>
+
+<h2>1.4 评分与错误追踪</h2>
+<ul>
+  <li><b>评分</b>：每个槽位独立判断，keyword &ge;50%匹配即命中</li>
+  <li><b>PI侵入</b>：非gold NPC的值出现在回答中</li>
+  <li><b>cred&lt;gold</b>：侵入值信誉低于gold → <b>真正PI</b>（被覆盖的旧值不该记得但记得了）</li>
+  <li><b>cred&ge;gold</b>：侵入值信誉不低于gold → 同信誉选错（primacy/recency竞争）</li>
+  <li><b>recency_n</b>：侵入来自倒数第几次更新（1=最近一次, 2=倒数第二次...）</li>
+</ul>
+
+<h2>1.5 方法论</h2>
+<table>
+  <tr><th>参数</th><th>值</th></tr>
+  <tr><td>模型 / API</td><td>deepseek-chat, temperature=0</td></tr>
+  <tr><td>值池</td><td>唯一值（无放回抽样）：height~42, clothing~210, hair~130, item~170, exit~64, time~204</td></tr>
+  <tr><td>评分函数</td><td>slot_match(): 提取>=3字符关键词，匹配率>=50%</td></tr>
+</table>
+
+<hr>
+
+<!-- ══════════════════════════ PI BUILDUP ══════════════════════════ -->
+<h1>2. PI累积曲线</h1>
+<h2>s=2, conflict_diff, NPC 25→200</h2>
+<p>每个NPC更新2个随机槽位，信誉1-5混合。唯一值池。5次重复。</p>
+
+<h3>Accuracy</h3>
+<table>
+  <tr><th>NPC</th><th>25</th><th>50</th><th>75</th><th>100</th><th>125</th><th>150</th><th>175</th><th>200</th></tr>
+  <tr><td><b>diff</b></td>
+    <td class="g">67%</td><td class="y">57%</td><td class="r">47%</td><td class="y">53%</td>
+    <td class="y">53%</td><td class="y">50%</td><td class="r">43%</td><td class="y">60%</td></tr>
+  <tr><td><b>equal</b></td>
+    <td class="r">47%</td><td class="y">53%</td><td class="r">43%</td><td class="r">43%</td>
+    <td class="y">53%</td><td class="y">57%</td><td class="y">50%</td><td class="y">60%</td></tr>
+</table>
+<aside>consistent_equal 始终100%（对照，无PI），不列入。</aside>
+
+<h3>PI侵入 + 错误来源</h3>
+<table>
+  <tr><th>NPC</th><th>25</th><th>50</th><th>75</th><th>100</th><th>125</th><th>150</th><th>175</th><th>200</th></tr>
+  <tr><td><b>PI (diff)</b></td>
+    <td class="g">21</td><td class="y">54</td><td class="y">69</td><td class="r">97</td>
+    <td class="r">118</td><td class="r">138</td><td class="r">150</td><td class="r">164</td></tr>
+  <tr><td><b>PI (equal)</b></td>
+    <td class="g">24</td><td class="y">48</td><td class="y">71</td><td class="r">99</td>
+    <td class="r">114</td><td class="r">132</td><td class="r">146</td><td class="r">168</td></tr>
+  <tr style="border-top:2px solid #666"><td><b>cred&lt;gold (diff)</b></td>
+    <td class="r">80%</td><td class="r">85%</td><td class="r">80%</td><td class="r">84%</td>
+    <td class="r">81%</td><td class="r">78%</td><td class="r">82%</td><td class="r">78%</td></tr>
+  <tr><td><b>cred&lt;gold (equal)</b></td>
+    <td>0%</td><td>0%</td><td>0%</td><td>0%</td><td>0%</td><td>0%</td><td>0%</td><td>0%</td></tr>
+</table>
+
+<div class="flex">
+  <div class="good"><b>PI线性增长，diff&asymp;equal</b>：信誉度不影响PI总量——纯槽位值竞争。</div>
+  <div class="good"><b>cred&lt;gold&asymp;80%</b>：大部分侵入是真正PI。equal的0%是全同信誉=无覆盖</div>
+</div>
+
+<h3>倒数第N次合法更新分布 (相对于gold, diff)</h3>
+<p>r1=gold前一个合法更新, r2=前两个, r3=前三个。</p>
+<table>
+  <tr><th>NPC</th><th>r1</th><th>r2</th><th>r3</th><th>r1+r2+r3</th><th>r4-5</th><th>r6+</th></tr>
+  <tr><td>25</td><td class="r">20%</td><td class="r">11%</td><td>4%</td><td class="r"><b>35%</b></td><td>2%</td><td class="r">63%</td></tr>
+  <tr><td>50</td><td class="r">9%</td><td class="r">7%</td><td>6%</td><td class="r"><b>22%</b></td><td>4%</td><td class="r">74%</td></tr>
+  <tr><td>100</td><td>3%</td><td>3%</td><td>4%</td><td>10%</td><td>5%</td><td class="r">85%</td></tr>
+  <tr><td>200</td><td>1%</td><td>1%</td><td>1%</td><td>3%</td><td>3%</td><td class="r">94%</td></tr>
+</table>
+
+<div class="flex">
+  <div class="good"><b>n=25时r1+r2+r3=35%</b>：接近Wang & Sun的56%。但n增大后合法更新链变长（~50个），侵入自然分散。</div>
+  <div class="box"><b>vs Wang & Sun (2025)</b>：他们每个key只有3-5次更新，r1-r3天然集中。我们每个槽位~50次合法更新，侵入分散是结构性的——不是PI不存在，是竞争池更大。</div>
+</div>
+
+<hr>
+
+<!-- ══════════════════════════ S SWEEP ══════════════════════════ -->
+<h1>3. 槽位数s的影响</h1>
+<h2>s=1→6, 总更新&asymp;300, 5次重复</h2>
+<p>s=每NPC更新槽位数。NPC数=300/s（s=1→300人, s=6→50人）。每个槽位被约50次更新。唯一值池。</p>
+
+<h3>Accuracy + PI</h3>
+<table>
+  <tr><th>s</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr>
+  <tr><td><b>NPC数</b></td><td>300</td><td>150</td><td>100</td><td>75</td><td>60</td><td>50</td></tr>
+  <tr><td><b>Accuracy</b></td><td class="y">63%</td><td class="y">60%</td><td class="y">50%</td><td class="y">53%</td><td class="y">60%</td><td class="y">50%</td></tr>
+  <tr><td><b>PI侵入</b></td><td>148&plusmn;8</td><td>145&plusmn;8</td><td>138&plusmn;8</td><td>138&plusmn;12</td><td>140&plusmn;21</td><td>145&plusmn;9</td></tr>
+  <tr><td><b>cred&lt;gold</b></td><td class="r">81%</td><td class="r">80%</td><td class="r">79%</td><td class="r">80%</td><td class="r">82%</td><td class="r">80%</td></tr>
+</table>
+
+<h3>每槽位侵入分布 (5次重复合计)</h3>
+<table>
+  <tr><th>s</th><th>height</th><th>clothing</th><th>hair</th><th>item</th><th>exit</th><th>time</th></tr>
+  <tr><td>1</td><td class="r">213</td><td class="g">51</td><td>84</td><td>58</td><td>103</td><td class="r">235</td></tr>
+  <tr><td>3</td><td class="r">202</td><td class="g">38</td><td>67</td><td>53</td><td>67</td><td class="r">255</td></tr>
+  <tr><td>6</td><td class="r">203</td><td class="g">42</td><td>81</td><td>51</td><td>101</td><td class="r">245</td></tr>
+</table>
+
+<div class="flex">
+  <div class="box"><b>s无主效应</b>：PI总量(136-149)和cred&lt;gold(&asymp;80%)在所有s一致——总更新固定则PI稳定存在。</div>
+  <div class="good"><b>height &amp; time = PI重灾区(200+)</b> ——连续数值维度相似度高易混淆。<br><b>clothing最抗PI(40-50)</b> ——颜色+物体关键词独特。</div>
+</div>
+
+<h3>recency分布 (gold-relative, diff)</h3>
+<table><tr><th>s</th><th>r1</th><th>r2</th><th>r3</th><th>r1+r2+r3</th><th>r4+</th></tr>
+<tr><td>1</td><td>2%</td><td>2%</td><td>2%</td><td><b>6%</b></td><td class="r">94%</td></tr>
+<tr><td>3</td><td>1%</td><td>1%</td><td>2%</td><td><b>5%</b></td><td class="r">95%</td></tr>
+<tr><td>6</td><td>2%</td><td>2%</td><td>1%</td><td><b>5%</b></td><td class="r">95%</td></tr></table>
+<aside>s sweep的r1+r2+r3=5-6%低于PI累积的n=25(35%)，因为s sweep每槽位~50次合法更新（=更大的竞争池=更分散）。</aside>
+
+<hr>
+
+<!-- ══════════════════════════ BATCH vs SEQUENTIAL ══════════════════════════ -->
+<h1>4. Batch vs Sequential</h1>
+<h2>s=3, 100 NPCs, 唯一值池, 3次重复</h2>
+<p>Sequential: 逐NPC→模型"Noted."→下一NPC (&times;101调用/rep)。Batch: 一次性 (&times;1调用/rep)。完整错误追踪。</p>
+
+<h3>总览</h3>
+<table>
+  <tr><th>mode</th><th>Acc</th><th>PI</th><th>cred&lt;gold</th><th>r1</th><th>r2</th><th>r3</th><th>r4-5</th><th>r6-10</th><th>11+</th></tr>
+  <tr><td><b>batch</b></td><td>50%</td><td>124</td><td class="r">80%</td><td class="g">0%</td><td>1%</td><td>1%</td><td>8%</td><td>12%</td><td class="r">77%</td></tr>
+  <tr><td><b>sequential</b></td><td class="g">56%</td><td>130</td><td class="r">81%</td><td class="g">0%</td><td>1%</td><td>2%</td><td>3%</td><td>5%</td><td class="r">89%</td></tr>
+</table>
+
+<h3>逐重复 + 错误追踪</h3>
+<table>
+  <tr><th>mode</th><th>rep</th><th>acc</th><th>PI</th><th>cred&lt;gold</th><th>hei</th><th>clo</th><th>hai</th><th>ite</th><th>exi</th><th>tim</th><th>r1+r2+r3</th></tr>
+  <tr><td rowspan="3"><b>batch</b></td><td>1</td><td class="g">67%</td><td>126</td><td class="r">83%</td><td class="r">90</td><td>11</td><td>3</td><td>5</td><td>11</td><td>6</td><td>4%</td></tr>
+  <tr><td>2</td><td class="r">33%</td><td>122</td><td class="r">80%</td><td class="r">88</td><td>12</td><td>1</td><td>2</td><td>13</td><td>6</td><td>2%</td></tr>
+  <tr><td>3</td><td>50%</td><td>124</td><td class="r">77%</td><td class="r">85</td><td>11</td><td>2</td><td>3</td><td>17</td><td>6</td><td>2%</td></tr>
+  <tr style="border-top:2px solid #666"><td rowspan="3"><b>seq</b></td><td>1</td><td class="g">67%</td><td>127</td><td class="r">84%</td><td class="r">100</td><td>0</td><td>6</td><td>6</td><td>2</td><td>6</td><td>5%</td></tr>
+  <tr><td>2</td><td class="r">33%</td><td>122</td><td class="r">78%</td><td class="r">100</td><td>2</td><td>1</td><td>5</td><td>2</td><td>12</td><td>2%</td></tr>
+  <tr><td>3</td><td class="g">67%</td><td>141</td><td class="r">81%</td><td class="r">106</td><td>2</td><td>6</td><td>8</td><td>3</td><td>16</td><td>3%</td></tr>
+</table>
+
+<div class="box">r1+r2+r3=2-5%, gold-relative。100 NPCs每槽位~50合法更新→大竞争池→自然分散。batch vs seq零差异。</div>
+
+<hr>
+
+<!-- ══════════════════════════ PI RELEASE: DUAL-CASE ══════════════════════════ -->
+<h1>5. Dual-Case Query：强制分案检索 ✗ 无 Release</h1>
+<h2>s=3, AB only, explicit, sequential, 每10人双案query, 5次重复</h2>
+<p><b>设计逻辑</b>：如果模型只是"没有动力"去分离两个场景的信息，而非缺乏能力——那么<b>显式要求分案回答</b>应该能产生 release。每次 query 同时问两个案件，NPC 前加 <code>[WAREHOUSE]</code> / <code>[CAR THEFT]</code> 标签。</p>
+
+<h3>Query 文本</h3>
+<div class="demo"><span class="q">[Chief] "Detective, give me an update. We now have TWO open cases —
+the WAREHOUSE BREAK-IN and the CAR THEFT.
+
+CASE 1 (Warehouse Break-in): Among the witnesses who reported on the
+WAREHOUSE case, describe the suspect. QUOTE the MOST CREDIBLE witness.
+
+CASE 2 (Car Theft): Among the witnesses who reported on the CAR THEFT
+case, describe the suspect and vehicle. QUOTE the MOST CREDIBLE witness."</span></div>
+
+<h3>结果</h3>
+<table>
+  <tr><th>Q</th><th>NPC</th><th>Case1 (仓库)</th><th>Case1 PI</th><th>Case2 (盗车)</th><th>Case2 PI</th><th>C1←C2 cross</th><th>C2←C1 cross</th></tr>
+  <tr><td>Q5</td><td>50</td><td class="y">53%</td><td>51</td><td style="color:#888">—</td><td>0</td><td class="r">2.2</td><td>0.0</td></tr>
+  <tr style="background:#1b3a2a"><td><b>Q6</b></td><td><b>60</b></td><td class="g">77%</td><td>97</td><td class="g"><b>83%</b></td><td>56</td><td class="r"><b>2.8</b></td><td class="r"><b>2.8</b></td></tr>
+  <tr><td>Q8</td><td>80</td><td class="r">20%</td><td>39</td><td class="y">67%</td><td>38</td><td class="r">2.6</td><td class="r">2.4</td></tr>
+  <tr><td>Q10</td><td>100</td><td class="r">27%</td><td>47</td><td class="g">83%</td><td>56</td><td class="r"><b>2.8</b></td><td class="r"><b>2.8</b></td></tr>
+</table>
+<aside>cross = 共享槽位(height/clothing/hair)被错误案件的目击者污染的个数。满分3 = 全部共享槽位被跨案污染。Case2在Q6-Q10才存在(盗车目击者从NPC 51开始)。</aside>
+
+<div class="flex">
+  <div class="good"><b>Case2本身表现不错</b>：Q6=83%, Q10=83%。分案prompt确实帮助模型专注于正确的目击者集合——盗车案始终高准确率。</div>
+  <div class="warn"><b>但跨案污染无法消除</b>：cross = 2.8/3 (93%)持续的跨案污染。即使提供了<code>[WAREHOUSE]</code>/<code>[CAR THEFT]</code>标签、即使query显式分案，模型仍然把仓库目击者的身高值混进盗车案的描述中。</div>
+</div>
+
+<hr>
+
+<!-- ══════════════════════════ PI RELEASE: ORTHOGONAL ══════════════════════════ -->
+<h1>5.5 Orthogonal Slots：零槽位重叠 + 四组对照 ✓ 确认</h1>
+<h2>s=3, AA/BB/AB/BA, dual-case query, explicit, sequential, 5次重复</h2>
+<p><b>设计逻辑</b>：如果cross=93%是因为槽位重叠——那把槽位完全分离会怎样？Scene A的6个槽位(height/clothing/hair/item/exit/time)与Scene B的6个槽位(license_plate/car_model/car_color/weapon/direction/suspect_age)<b>零重叠</b>。Cross在结构上不可能。此时PI释放 = 双案并行本身不降低准确率。用AA/BB对照组测量dual-tasking的纯粹注意力成本。</p>
+
+<h3>4组设计</h3>
+<table>
+  <tr><th>组</th><th>NPC 1-50</th><th>NPC 51-100</th><th>切换</th><th>Case1=W?</th><th>Case2=C?</th></tr>
+  <tr style="background:#2a2a4a"><td><b>AA</b></td><td>W 6槽位</td><td>W 6槽位</td><td>✗</td><td>全部100人</td><td style="color:#888">—</td></tr>
+  <tr style="background:#2a2a4a"><td><b>BB</b></td><td>C 6槽位</td><td>C 6槽位</td><td>✗</td><td style="color:#888">—</td><td>全部100人</td></tr>
+  <tr style="background:#1b3a2a"><td><b>AB</b></td><td>W 6槽位</td><td><b>C 6槽位</b></td><td>✓</td><td>前50人</td><td>后50人</td></tr>
+  <tr style="background:#1b3a2a"><td><b>BA</b></td><td>C 6槽位</td><td><b>W 6槽位</b></td><td>✓</td><td>后50人</td><td>前50人</td></tr>
+</table>
+
+<h3>结果</h3>
+<table>
+  <tr><th>组</th><th>切换</th><th>Case1(W) Q5</th><th>Case1 Q10</th><th>Case2(C) Q6</th><th>Case2 Q10</th><th>Dual-task cost</th></tr>
+  <tr style="background:#2a2a4a"><td><b>AA</b></td><td>✗</td><td class="y">47%</td><td class="g"><b>77%</b></td><td style="color:#888">—</td><td style="color:#888">—</td><td>—</td></tr>
+  <tr style="background:#2a2a4a"><td><b>BB</b></td><td>✗</td><td style="color:#888">—</td><td style="color:#888">—</td><td class="y">67%</td><td class="g"><b>77%</b></td><td>—</td></tr>
+  <tr style="background:#1b3a2a"><td><b>AB</b></td><td><b>W→C</b></td><td class="y">43%</td><td class="r"><b>23%</b></td><td class="y">67%</td><td class="g">73%</td><td class="r">−20%</td></tr>
+  <tr style="background:#1b3a2a"><td><b>BA</b></td><td><b>C→W</b></td><td style="color:#888">—</td><td class="y">47%</td><td class="g">80%</td><td class="r"><b>17%</b></td><td class="r">−63%</td></tr>
+</table>
+
+<div class="flex">
+  <div class="good"><b>✓ Cross = 零</b>。不同槽位集合使跨案污染在结构上不可能——这是最干净的验证。</div>
+  <div class="warn"><b>✗ 但出现了注意力成本</b>。AB中Case1(W)从Q5=43%跌至Q10=23%——虽然NPC 51后再无仓库目击者，但50个盗车目击者仍在竞争有限注意力。BA中Case2(C)从Q6=80%跌至Q10=17%——同样，当"当前任务"不再是盗车案时，旧信息快速衰退。</div>
+</div>
+
+<div class="box">
+  <b>两种 PI 的分离</b><br><br>
+  综合 Dual-Case (§5) 和 Orthogonal (§5.5)，可以区分离两种机制：<br>
+  <b>1. Slot-level PI (槽位内)</b>：同一槽位(height?)的旧值永远竞争当前提取。这是 content-addressable 检索导致的——相似表征自动汇聚，不经过 category filtering。Dual-Case 中 cross=93% 的证据。<br>
+  <b>2. Discourse-level PI (话语层)</b>：即使槽位完全正交(Orthogonal)，处理新信息仍削弱旧信息的可检索性。这是注意力竞争——100个NPC共享上下文窗口，后来的信息稀释了早期的。<br><br>
+  <b>理论含义</b>：Wickens 的 PI release 同时需要两个条件——(a) 提取线索切换 (b) category-based filtering。LLM 有(a)但<b>没有(b)</b>。Transformer 的记忆检索不经过 category label——这就是 PI release 在 LLM 中不存在的根本原因。
+</div>
+
+<hr>
+
+<!-- ══════════════════════════ PI vs CONTEXT ══════════════════════════ -->
+<h1>6. PI vs Context Length 控制实验</h1>
+
+<!-- ══════════════════════════ PI vs CONTEXT ══════════════════════════ -->
+<h1>6. PI vs Context Length 控制实验</h1>
+<h2>固定150 NPCs, 变目标信息量, 无关槽位填充</h2>
+<p>info=25: 25人报目标槽位 + 125人报无关槽位(car_color/weather/day_of_week...)。5次重复。</p>
+
+<h3>Prompt示例 (info=25/150)</h3>
+<div class="demo"><span class="comment">[25个有效目击者 — 报告目标槽位]</span>
+<span class="npc">[1] [Credibility: 3/5] height: about 5 foot 10 | clothing: a black leather jacket</span>
+<span class="npc">[2] [Credibility: 5/5] exit: the south stairwell | hair: brown, curly hair</span>
+...
+
+<span class="comment">[125个填充目击者 — 报告无关槽位，保持总context长度不变]</span>
+<span style="color:#888">[26] [Credibility: 2/5] car_color: red | weather: sunny
+[27] [Credibility: 4/5] day_of_week: Monday | street_name: Oak Street
+[28] [Credibility: 1/5] witness_mood: nervous | lighting: dim
+... (全部150人)</span>
+
+<span class="q">[Chief] "Detective, describe the suspect. For each detail, QUOTE the
+exact words of the MOST CREDIBLE witness."</span></div>
+
+<h3>结果</h3>
+<table>
+  <tr><th>info_n (/150)</th><th>25</th><th>50</th><th>75</th><th>100</th><th>150</th></tr>
+  <tr><td><b>Accuracy</b></td><td class="g">70%</td><td class="y">63%</td><td class="y">57%</td><td class="y">50%</td><td class="y">50%</td></tr>
+  <tr><td><b>PI侵入</b></td><td class="g">23</td><td class="y">53</td><td class="y">66</td><td class="r">105</td><td class="r">138</td></tr>
+  <tr><td><b>cred&lt;gold</b></td><td>76%</td><td class="r">80%</td><td class="r">79%</td><td class="r">81%</td><td class="r">82%</td></tr>
+  <tr><td><b>r1+r2+r3</b></td><td class="r">41%</td><td>21%</td><td>15%</td><td>11%</td><td>4%</td></tr>
+</table>
+
+<div class="good">
+  <b>PI独立于context length</b>：固定150 NPCs = 相同prompt长度，PI从23→138纯粹由目标信息量驱动。<br>
+  Wang & Sun的结论在我们范式上成功复现：干扰是独立因素，不是长文本的副作用。
+</div>
+
+<h3>对照：信息量 vs Context Length</h3>
+<table>
+  <tr><th>实验</th><th>Context Length</th><th>info=25</th><th>info=50</th><th>info=75</th><th>info=100</th><th>info=150</th></tr>
+  <tr><td><b>&sect;2 PI累积</b></td><td class="r">变化(25→150 NPCs)</td><td class="g">PI=21</td><td class="g">PI=54</td><td class="y">PI=69</td><td class="r">PI=97</td><td class="r">PI=164</td></tr>
+  <tr><td><b>&sect;6 Context控制</b></td><td class="g">固定(150 NPCs)</td><td class="g">PI=23</td><td class="g">PI=53</td><td class="y">PI=66</td><td class="r">PI=105</td><td class="r">PI=138</td></tr>
+</table>
+
+<div class="box">
+  <b>两条PI曲线几乎重合</b>：info=25时PI=21 vs 23, info=150时PI=164 vs 138。context length是否固定对PI增长无显著影响——PI完全由目标信息量驱动。<br>
+  info=150时&sect;2的PI(164)略高于&sect;6(138)，可能因为&sect;6的填充NPC虽然占context但提供了"休息空间"，使模型更容易隔离目标信息。
+</div>
+
+<hr>
+
+<h1>8. 脚本与数据</h1>
+<table>
+  <tr><th>脚本</th><th>实验内容</th><th>输出</th></tr>
+  <tr><td><code>experiments/pi_release/run_pi_buildup.py</code></td><td>PI累积: s=2, 2条件, 25→200 NPCs, 5 repeats</td><td><code>results/pi_buildup_s2.json</code></td></tr>
+  <tr><td><code>experiments/pi_release/run_batch_slots.py</code></td><td>s sweep: s=1→6, 总更新&asymp;300, 5 repeats</td><td><code>results/batch_all.json</code></td></tr>
+  <tr style="background:#3a2a1b"><td><code>experiments/pi_release/run_pi_release_dual.py</code></td><td><b>§5 Dual-Case:</b> 双案分询, 同槽位cross=93%</td><td><code>results/pi_release_dual.json</code></td></tr>
+  <tr style="background:#1b3a2a"><td><code>experiments/pi_release/run_pi_release_orthogonal.py</code></td><td><b>§5.5 Orthogonal:</b> 零槽位重叠, 4组, dual-task cost</td><td><code>results/pi_release_orthogonal.json</code></td></tr>
+  <tr><td><code>experiments/pi_release/run_sequential.py</code></td><td>Batch vs Sequential: s=3, 100 NPCs</td><td><code>results/seq_vs_batch.json</code></td></tr>
+<tr><td><code>experiments/pi_release/run_context_control.py</code></td><td>PI vs Context Length: 固定150 NPCs, 变info</td><td><code>results/pi_vs_context.json</code></td></tr>
+</table>
+
+<h1>7. 核心发现</h1>
+
+<div class="good"><b>1. PI稳健存在于LLM中。</b> PI侵入随NPC线性增长(21→164)。cred&lt;gold&asymp;80%证明大部分侵入是真正PI而非同信誉选错。consistent对照100%准确确认PI源自信息矛盾而非信息量。</div>
+
+<div class="good"><b>2. 信誉度不影响PI。</b> diff和equal两条PI曲线几乎完全重合(23→164 vs 24→168)。PI是纯槽位值记忆竞争。</div>
+
+<div class="good"><b>3. PI侵入方向确认为older&rarr;newer。</b> 所有条件中90%+侵入来自gold NPC之前的目击者。</div>
+
+<div class="box"><b>4. 侵入recency分散，不集中在最近几项。</b> r2+r3仅2-4%，与Wang & Sun的56%差异来自trial边界（我们的batch范式缺乏episodic边界）。</div>
+
+<div class="good"><b>5. PI Release 不存在——两种PI机制的分离。</b> Dual-Case (§5) 证明同槽位跨案污染 93% 无法消除。Orthogonal (§5.5) 证明即使零槽位重叠，dual-tasking 仍产生注意力成本(AB Case1 Q5→Q10 = 43%→23%)。<b>LLM 没有 category-based memory filtering。</b> Slot-level PI (content-addressable 汇聚) + Discourse-level PI (注意力竞争) 共同解释了为什么 Wickens 效应的两个前提——提取线索切换 + category filtering——LLM 只满足其一。</div>
+
+</body>
+</html>

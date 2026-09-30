@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>LLMs in Academic Work — Survey Report</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg1:#0b1026; --bg2:#131a3a; --accent:#7c5cff; --accent2:#22d3ee;
+    --gold:#ffd479; --text:#e8ecff; --muted:#9aa3c7;
+    --card:rgba(255,255,255,0.045); --border:rgba(255,255,255,0.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  @page{size:900px 3798px;margin:0;}
+  html,body{background:#0b1026;color:var(--text);
+    font-family:"Helvetica Neue","Segoe UI",Arial,"PingFang SC",sans-serif;
+    line-height:1.6;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  body{
+    background:
+      radial-gradient(1200px 600px at 10% -10%, rgba(124,92,255,.35), transparent 60%),
+      radial-gradient(1000px 500px at 100% 0%, rgba(34,211,238,.22), transparent 55%),
+      linear-gradient(180deg,var(--bg1),var(--bg2));
+  }
+  .page{max-width:880px;margin:0 auto;padding:46px 56px 30px;}
+  .sheet{background:var(--card);border:1px solid var(--border);border-radius:20px;
+    padding:30px 34px;margin-bottom:22px;backdrop-filter:blur(6px);
+    box-shadow:0 20px 60px rgba(0,0,0,.35);}
+  /* HERO */
+  .hero{text-align:center;padding:34px 24px 30px;border:none;background:transparent;box-shadow:none;}
+  .eyebrow{display:inline-block;letter-spacing:3px;font-size:11px;font-weight:700;
+    color:var(--bg1);background:linear-gradient(90deg,var(--accent2),var(--gold));
+    padding:6px 14px;border-radius:999px;text-transform:uppercase;margin-bottom:18px;}
+  h1{font-size:40px;line-height:1.12;font-weight:800;letter-spacing:-.5px;
+    background:linear-gradient(90deg,#fff,#b9c2ff 40%,var(--accent2));
+    -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .sub{color:var(--muted);margin-top:12px;font-size:14px;}
+  .author{margin-top:14px;font-size:18px;font-weight:700;color:#fff;letter-spacing:.5px;}
+  .author::before{content:"";display:inline-block;width:22px;height:2px;background:linear-gradient(90deg,var(--gold),var(--accent2));vertical-align:middle;margin-right:8px;}
+  .meta{margin-top:18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+  .chip{font-size:12px;color:var(--text);border:1px solid var(--border);
+    background:rgba(255,255,255,.04);padding:6px 12px;border-radius:999px;}
+  .chip b{color:var(--accent2);}
+  h2{font-size:20px;margin-bottom:10px;display:flex;align-items:center;gap:10px;}
+  h2 .num{font-size:13px;font-weight:800;color:var(--bg1);
+    background:linear-gradient(135deg,var(--gold),var(--accent2));
+    width:26px;height:26px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;}
+  p{margin:8px 0;font-size:14px;color:#d6dcf5;}
+  .lead{font-size:15px;color:#eef1ff;}
+  ul{margin:8px 0 8px 4px;list-style:none;}
+  li{font-size:14px;color:#d6dcf5;margin:5px 0;padding-left:20px;position:relative;}
+  li::before{content:"▸";position:absolute;left:0;color:var(--accent2);}
+  .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0 4px;}
+  .kpi{background:linear-gradient(160deg,rgba(124,92,255,.18),rgba(34,211,238,.08));
+    border:1px solid var(--border);border-radius:14px;padding:14px 10px;text-align:center;}
+  .kpi .v{font-size:24px;font-weight:800;color:#fff;}
+  .kpi .l{font-size:10.5px;color:var(--muted);margin-top:4px;letter-spacing:.5px;}
+  .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px;}
+  .chart-card{background:rgba(0,0,0,.18);border:1px solid var(--border);border-radius:14px;padding:14px;}
+  .chart-card.full{grid-column:1/-1;}
+  .chart-card h3{font-size:13px;color:var(--muted);margin-bottom:8px;font-weight:600;letter-spacing:.4px;}
+  .canvas-wrap{position:relative;height:210px;}
+  .chart-card.full .canvas-wrap{height:240px;}
+  .callout{margin-top:14px;border-left:3px solid var(--gold);padding:10px 14px;
+    background:rgba(255,212,121,.08);border-radius:0 10px 10px 0;font-size:13.5px;color:#f3e6c8;}
+  .role-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px;}
+  .role-table th,.role-table td{padding:9px 10px;border-bottom:1px solid var(--border);text-align:left;}
+  .role-table th{color:var(--accent2);font-weight:700;font-size:11px;letter-spacing:.5px;text-transform:uppercase;}
+  .role-table td{color:#d6dcf5;}
+  .tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;
+    background:rgba(124,92,255,.2);color:#cbbcff;border:1px solid rgba(124,92,255,.4);}
+  footer{text-align:center;color:var(--muted);font-size:11px;padding:8px 0 24px;}
+  @media print{
+    .page{max-width:none;padding:0;}
+    .sheet{break-inside:avoid;margin:0 14px 14px;border-radius:0;}
+    body{background:#0b1026;}
+    html,body{background:#0b1026;}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HERO -->
+  <header class="hero">
+    <span class="eyebrow">Survey Analytical Report</span>
+    <h1>Large Language Models<br>in Academic Work</h1>
+    <p class="author">Guo Jiale · 郭嘉乐</p>
+    <p class="sub">A small-scale questionnaire study on adoption, trust, and academic-integrity concerns among university students</p>
+    <div class="meta">
+      <span class="chip">Topic: <b>LLM use in coursework &amp; research</b></span>
+      <span class="chip">Responses: <b>26 valid</b></span>
+      <span class="chip">Questions: <b>5</b></span>
+      <span class="chip">Group: <b>Solo (1 member)</b></span>
+    </div>
+  </header>
+
+  <!-- 1. INTRODUCTION -->
+  <section class="sheet">
+    <h2><span class="num">1</span>Introduction &amp; Research Questions</h2>
+    <p class="lead">Large Language Models (LLMs) such as ChatGPT have rapidly become embedded in students' daily learning routines. This study investigates how university students actually use LLMs in academic contexts, how much they trust the outputs, and how they perceive the accompanying academic-integrity risks.</p>
+    <p>Three research questions guide the survey:</p>
+    <ul>
+      <li><b>RQ1</b> — How frequently and for what purposes do students use LLMs in academic work?</li>
+      <li><b>RQ2</b> — How reliable do students consider LLM-generated academic content?</li>
+      <li><b>RQ3</b> — What concerns do students hold regarding academic integrity, and what regulatory stance do they expect from universities?</li>
+    </ul>
+  </section>
+
+  <!-- KPI -->
+  <section class="sheet">
+    <h2><span class="num">2</span>Key Figures at a Glance</h2>
+    <div class="kpi-row">
+      <div class="kpi"><div class="v">26</div><div class="l">VALID RESPONSES</div></div>
+      <div class="kpi"><div class="v">96%</div><div class="l">WEEKLY+ USERS</div></div>
+      <div class="kpi"><div class="v">69%</div><div class="l">SOMEWHAT TRUST</div></div>
+      <div class="kpi"><div class="v">81%</div><div class="l">WANT GUIDANCE</div></div>
+    </div>
+    <div class="callout">Adoption is near-universal, yet trust is moderate and integrity anxiety is widespread — a clear mismatch that calls for institutional guidance rather than prohibition.</div>
+  </section>
+
+  <!-- 3. QUESTIONNAIRE DESIGN -->
+  <section class="sheet">
+    <h2><span class="num">3</span>Questionnaire Design</h2>
+    <p>The questionnaire contains five items and fits on a single A4 page. It was distributed via Tencent Questionnaire (腾讯问卷), targeting university students.</p>
+    <ul>
+      <li><b>Q1 (Frequency)</b> — single choice, from "never/rarely" to "daily".</li>
+      <li><b>Q2 (Use cases)</b> — multiple choice: information retrieval &amp; brainstorming, translation &amp; polishing, coding, summarising papers, others.</li>
+      <li><b>Q3 (Reliability)</b> — single choice on a four-point perceived-accuracy scale.</li>
+      <li><b>Q4 (Integrity concern)</b> — single choice on worry frequency.</li>
+      <li><b>Q5 (Expected university stance)</b> — single choice.</li>
+    </ul>
+    <p>26 responses were collected; all passed the platform's validity check (0 invalid), exceeding the 20-response minimum.</p>
+  </section>
+
+  <!-- 4. DATA ANALYSIS -->
+  <section class="sheet">
+    <h2><span class="num">4</span>Data Organization &amp; Analysis</h2>
+    <div class="chart-grid">
+      <div class="chart-card full">
+        <h3>Q1 · Usage Frequency (n = 26)</h3>
+        <div class="canvas-wrap"><canvas id="c1"></canvas></div>
+      </div>
+      <div class="chart-card full">
+        <h3>Q2 · Main Academic Use Cases (multi-select)</h3>
+        <div class="canvas-wrap"><canvas id="c2"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>Q3 · Perceived Reliability</h3>
+        <div class="canvas-wrap"><canvas id="c3"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>Q4 · Academic-Integrity Concern</h3>
+        <div class="canvas-wrap"><canvas id="c4"></canvas></div>
+      </div>
+      <div class="chart-card full">
+        <h3>Q5 · Expected University Stance</h3>
+        <div class="canvas-wrap"><canvas id="c5"></canvas></div>
+      </div>
+    </div>
+    <div class="callout"><b>Reading the data:</b> 25 of 26 respondents (96%) use LLMs "a few times a week", confirming deep penetration into study habits. Use is dominated by information retrieval/brainstorming and coding (88% each). Yet only 12% regard outputs as "highly reliable"; 58% place them in the cautious "relatively reliable" tier, and 31% find them unreliable. Correspondingly, 62% sometimes worry about academic-integrity violations, while 81% want universities to <i>actively encourage and teach</i> proper use rather than ban or ignore it.</div>
+  </section>
+
+  <!-- 5. DISCUSSION -->
+  <section class="sheet">
+    <h2><span class="num">5</span>Discussion &amp; Conclusion</h2>
+    <p>The results reveal a striking <b>adoption–trust gap</b>. Students have integrated LLMs into nearly every academic workflow, but their confidence in the outputs lags far behind: most treat LLM content as a draft requiring verification rather than a finished answer. This pragmatic scepticism is healthy, yet it coexists with genuine anxiety — only 19% never worry about integrity, and the boundary between legitimate assistance and misconduct remains blurry to most.</p>
+    <p>The near-consensus (81%) in favour of <i>active encouragement plus instruction</i> is the most policy-relevant finding. Students are not asking for permission to cheat; they are asking for clear rules and training. A limitation of this study is its small, convenience sample (n = 26) drawn mainly through personal networks, which restricts generalisability. Future work could expand the sample, add open-ended items, and compare disciplines. In conclusion, universities should respond to widespread LLM adoption not with prohibition, but with explicit integrity guidelines and courses on critical, verifiable use.</p>
+  </section>
+
+  <!-- 6. ROLES -->
+  <section class="sheet">
+    <h2><span class="num">6</span>Member Responsibilities</h2>
+    <p class="lead">This project was completed independently by the author, <b>Guo Jiale (郭嘉乐)</b>, as a single-member group. All work — topic selection, questionnaire design, data collection, analysis, visualisation, and report writing — was carried out solely by the author.</p>
+  </section>
+
+  <footer>Prepared by Guo Jiale (郭嘉乐)</footer>
+</div>
+
+<script>
+const FONT={family:"'Helvetica Neue',Arial,sans-serif",size:12};
+Chart.defaults.color="#9aa3c7";
+Chart.defaults.font.family=FONT.family;
+Chart.defaults.font.size=12;
+Chart.defaults.animation=false;
+Chart.defaults.responsive=true;
+Chart.defaults.maintainAspectRatio=false;
+const grad=(ctx,c1,c2)=>{const{ctx:c,chartArea:a}=ctx.chart;if(!a)return c1;
+  const g=c.createLinearGradient(0,a.bottom,0,a.top);g.addColorStop(0,c1);g.addColorStop(1,c2);return g;};
+const grid={color:"rgba(255,255,255,.06)"};
+
+// Q1 frequency (only A and C were actually selected by respondents)
+new Chart(document.getElementById("c1"),{type:"bar",
+  data:{labels:["A · Never / rarely","C · A few times a week"],
+    datasets:[{data:[1,25],backgroundColor:(c)=>grad(c,"#22d3ee","#7c5cff"),borderRadius:8,maxBarThickness:64}]},
+  options:{plugins:{legend:{display:false},
+    tooltip:{callbacks:{label:(t)=>`${t.raw} respondents`}}},
+    scales:{y:{grid,ticks:{stepSize:5}},x:{grid:{display:false}}}}});
+
+// Q2 multi-select
+new Chart(document.getElementById("c2"),{type:"bar",
+  data:{labels:["Info retrieval & brainstorming","Coding / debugging","Translation & polishing","Summarising papers","Others"],
+    datasets:[{data:[23,23,18,17,7],backgroundColor:(c)=>grad(c,"#ffd479","#7c5cff"),borderRadius:8,maxBarThickness:46}]},
+  options:{indexAxis:"y",plugins:{legend:{display:false}},scales:{x:{grid},y:{grid:{display:false}}}}});
+
+// Q3 reliability doughnut
+new Chart(document.getElementById("c3"),{type:"doughnut",
+  data:{labels:["B · Unreliable","C · Relatively reliable","D · Highly reliable"],
+    datasets:[{data:[8,15,3],backgroundColor:["#f87171","#7c5cff","#22d3ee"],borderColor:"#0b1026",borderWidth:3}]},
+  options:{cutout:"62%",plugins:{legend:{position:"bottom",labels:{boxWidth:12,font:{size:11}}}}}});
+
+// Q4 integrity concern
+new Chart(document.getElementById("c4"),{type:"doughnut",
+  data:{labels:["A · Never worry","B · Sometimes","C · Frequently"],
+    datasets:[{data:[5,16,5],backgroundColor:["#22d3ee","#ffd479","#f87171"],borderColor:"#0b1026",borderWidth:3}]},
+  options:{cutout:"62%",plugins:{legend:{position:"bottom",labels:{boxWidth:12,font:{size:11}}}}}});
+
+// Q5 university stance
+new Chart(document.getElementById("c5"),{type:"bar",
+  data:{labels:["B · Actively encourage + teach","C · Remain neutral"],
+    datasets:[{data:[21,5],backgroundColor:(c)=>grad(c,"#22d3ee","#7c5cff"),borderRadius:8,maxBarThickness:60}]},
+  options:{indexAxis:"y",plugins:{legend:{display:false}},scales:{x:{grid},y:{grid:{display:false}}}}});
+</script>
+</body>
+</html>

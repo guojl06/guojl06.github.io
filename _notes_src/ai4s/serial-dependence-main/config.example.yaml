@@ -1,0 +1,13 @@
+base_url: "https://www.dmxapi.cn/v1"
+api_key: "YOUR_API_KEY"     # 在此处填写你的 DMXAPI key（只作用于本项目）
+model: "your_model_name"
+temperature: 0.3
+which: "both"           # exp1 | exp2 | both
+n_words: 400
+seed: null
+excel_path: "testing_data/Estimates concreteness words Brysbaert et al.xlsx"
+ci95_enable: true
+ci95_threshold: 0.5     # 半宽阈值（±）
+max_trials_per_word: 30
+#n_words_exp2: 200
+dimension: "concreteness"   # 默认使用 concreteness

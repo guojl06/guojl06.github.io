@@ -1,0 +1,20 @@
+[dbg] --- query #1: x=1 y=1 a=1 b=1 (求和区间应为行 1..1, 列 1..1), sum(入口)=0
+[dbg]   行1: rowsum[1][y+b=2]=3 - rowsum[1][y=1]=1 => 2
+[dbg] q1 结束: sum=2 (本询问贡献=2)
+[dbg] --- query #2: x=1 y=3 a=4 b=2 (求和区间应为行 1..4, 列 3..4), sum(入口)=2
+[dbg]   行1: rowsum[1][y+b=5]=0 - rowsum[1][y=3]=6 => -6
+[dbg]   行2: rowsum[2][y+b=5]=0 - rowsum[2][y=3]=18 => -18
+[dbg]   行3: rowsum[3][y+b=5]=0 - rowsum[3][y=3]=9 => -9
+[dbg]   行4: rowsum[4][y+b=5]=0 - rowsum[4][y=3]=24 => -24
+[dbg] q2 结束: sum=-55 (本询问贡献=-57)
+[dbg] --- query #3: x=2 y=2 a=3 b=3 (求和区间应为行 2..4, 列 2..4), sum(入口)=-55
+[dbg]   行2: rowsum[2][y+b=5]=0 - rowsum[2][y=2]=11 => -11
+[dbg]   行3: rowsum[3][y+b=5]=0 - rowsum[3][y=2]=7 => -7
+[dbg]   行4: rowsum[4][y+b=5]=0 - rowsum[4][y=2]=17 => -17
+[dbg] q3 结束: sum=-90 (本询问贡献=-35)
+[dbg] --- query #4: x=1 y=1 a=4 b=4 (求和区间应为行 1..4, 列 1..4), sum(入口)=-90
+[dbg]   行1: rowsum[1][y+b=5]=0 - rowsum[1][y=1]=1 => -1
+[dbg]   行2: rowsum[2][y+b=5]=0 - rowsum[2][y=1]=5 => -5
+[dbg]   行3: rowsum[3][y+b=5]=0 - rowsum[3][y=1]=4 => -4
+[dbg]   行4: rowsum[4][y+b=5]=0 - rowsum[4][y=1]=9 => -9
+[dbg] q4 结束: sum=-109 (本询问贡献=-19)

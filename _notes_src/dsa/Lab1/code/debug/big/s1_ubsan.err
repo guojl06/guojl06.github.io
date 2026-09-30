@@ -1,0 +1,2 @@
+solution_1.cpp:10:26: runtime error: index 2000 out of bounds for type 'int[2000][2000]'
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior solution_1.cpp:10:26 

@@ -1,0 +1,32 @@
+# ana_norms_bias_sd/params.yaml
+
+# k-back sweep
+k_values: [1, 2, 3, 5, -1, -2, -3, -5]
+
+# permutation test
+n_permutations: 1000
+random_seed: 123
+
+# norms
+norms_csv_path: "testing_data/Warriner_et_alemotratings.csv"
+
+# which VAD dimension to use as stimulus value
+# - if your exp2 has asked_dimension/exp2_dimension, that will override this per-trial
+# - otherwise it falls back to run_config.yaml's dimension, then to this default
+default_norm_dimension: "valence"   # valence | arousal | dominance
+
+# bias removal b(s)
+bias_method: knn_kernel   # h = alpha * d_k                 # bin | poly
+n_bins: 30                          # for bin method
+bin_smooth_window: 3                # moving-average smoothing across bins (>=1)
+poly_degree: 3                      # for poly method
+bias_method: knn_kernel
+knn_k: 10
+knn_alpha: 1.0
+knn_min_bandwidth: 0.001
+knn_curve_n: 200
+
+# plotting
+make_scatter_for_all_k: false       # only k=1 plots unless true
+
+kernel_bandwidth: 8.0 

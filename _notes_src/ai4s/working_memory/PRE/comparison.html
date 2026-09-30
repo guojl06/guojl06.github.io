@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>LLM PI Release — Qwen3-4B vs DeepSeek API</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:"Segoe UI",sans-serif;background:#1a1a2e;color:#e0e0e0;line-height:1.8;max-width:1300px;margin:0 auto;padding:40px 60px}
+  h1{font-size:1.8em;color:#fff;margin:44px 0 16px;padding-bottom:8px;border-bottom:2px solid #64b5f6}
+  h2{font-size:1.3em;color:#64b5f6;margin:28px 0 12px}
+  h3{font-size:1.05em;color:#ffb74d;margin:18px 0 8px}
+  p{font-size:.95em;margin:6px 0}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.88em}
+  th,td{padding:7px 12px;text-align:center;border:1px solid #333}
+  th{background:#2a2a4a;color:#64b5f6}
+  td{background:#1e1e36}
+  td.qa{background:#1b2a3a} td.da{background:#1a1a36}
+  .g{color:#66bb6a;font-weight:bold}.r{color:#ff6b6b;font-weight:bold}.y{color:#ffb74d;font-weight:bold}
+  .box{background:#2a2a4a;border-left:4px solid #64b5f6;padding:12px 20px;margin:12px 0;border-radius:4px;font-size:.95em}
+  .good{background:#1b3a2a;border-left:4px solid #66bb6a;padding:12px 20px;margin:12px 0;border-radius:4px}
+  .warn{background:#3a2a1b;border-left:4px solid #ffb74d;padding:12px 20px;margin:12px 0;border-radius:4px}
+  .flex{display:flex;gap:24px;margin:14px 0}
+  .flex>*{flex:1}
+  hr{border:none;border-top:1px solid #333;margin:40px 0}
+  aside{color:#888;font-size:.82em}
+  .tag{display:inline-block;padding:2px 8px;border-radius:3px;font-size:.8em}
+  .t-g{background:#1b3a2a;color:#66bb6a}.t-r{background:#3a1b1b;color:#ff6b6b}.t-y{background:#3a2a1b;color:#ffb74d}
+</style>
+</head>
+<body>
+
+<h1>LLM PI Release — 跨模型对比</h1>
+<p style="color:#aaa;margin-top:-10px">
+  <b style="color:#ffb74d">Qwen3-4B</b> (GPU, float16, greedy, 5 reps)
+  &nbsp;vs&nbsp;
+  <b style="color:#64b5f6">DeepSeek API</b> (deepseek-chat, temp=0, 5 reps)
+</p>
+
+<div class="box">
+  <b>核心问题</b>：LLM 是否有 category-based memory organization？Wickens PI Release 是否存在于 Transformer？<br>
+  <b>统一范式</b>：警探 + 目击者 + 信誉度 1-5★ · 6 槽位 · 每类实验两模型同设计
+</div>
+
+<!-- ══════════════════════════ 1. PI BUILDUP ══════════════════════════ -->
+<h1>1. PI 累积曲线</h1>
+<h2>s=2, conflict_diff, NPC 25→200, batch</h2>
+
+<h3>Accuracy</h3>
+<table>
+  <tr><th></th><th>25</th><th>50</th><th>75</th><th>100</th><th>125</th><th>150</th><th>175</th><th>200</th></tr>
+  <tr><td class="qa"><b>Qwen 4B</b></td><td class="y">40%</td><td class="r">23%</td><td class="y">37%</td><td class="r">27%</td><td class="y">43%</td><td class="r">27%</td><td class="r">27%</td><td class="y">30%</td></tr>
+  <tr><td class="da"><b>DeepSeek</b></td><td class="g">67%</td><td class="y">57%</td><td class="y">47%</td><td class="y">53%</td><td class="y">53%</td><td class="y">50%</td><td class="y">43%</td><td class="y">60%</td></tr>
+</table>
+
+<h3>PI 侵入 &amp; cred&lt;gold</h3>
+<table>
+  <tr><th></th><th>25</th><th>50</th><th>75</th><th>100</th><th>125</th><th>150</th><th>175</th><th>200</th></tr>
+  <tr><td class="qa"><b>Qwen PI</b></td><td>20</td><td>27</td><td>47</td><td>65</td><td>85</td><td>41</td><td>66</td><td>42</td></tr>
+  <tr><td class="da"><b>DS PI</b></td><td>21</td><td>54</td><td>69</td><td>97</td><td>118</td><td>138</td><td>150</td><td>164</td></tr>
+  <tr style="border-top:2px solid #666"><td class="qa"><b>Qwen cred&lt;gold</b></td><td class="r">79%</td><td class="r">87%</td><td class="r">86%</td><td class="r">82%</td><td class="r">78%</td><td class="r">77%</td><td class="r">81%</td><td class="r">77%</td></tr>
+  <tr><td class="da"><b>DS cred&lt;gold</b></td><td class="r">80%</td><td class="r">85%</td><td class="r">80%</td><td class="r">84%</td><td class="r">81%</td><td class="r">78%</td><td class="r">82%</td><td class="r">78%</td></tr>
+</table>
+
+<div class="flex">
+  <div class="good"><b>cred&lt;gold ≈ 80% —— 完美一致</b><br>0.6B / 4B / 671B 三个规模下真正 PI 比例均为 80%。这是 slot-level content-addressable retrieval 的结构性特征，与模型尺寸无关。</div>
+  <div class="warn"><b>4B 准确率偏低</b><br>DeepSeek acc=47-67%，Qwen acc=23-43%。4B 在 batch 长文本模式下整体性能更差。Qwen PI 计数也更低——更少侵入但更多遗漏。</div>
+</div>
+
+<hr>
+
+<!-- ══════════════════════════ 2. s SWEEP ══════════════════════════ -->
+<h1>2. s Sweep</h1>
+<h2>s=1→6, 总更新≈300, batch</h2>
+<table>
+  <tr><th></th><th>s=1</th><th>s=2</th><th>s=3</th><th>s=4</th><th>s=5</th><th>s=6</th></tr>
+  <tr><td class="qa"><b>Qwen Acc</b></td><td class="y">40%</td><td class="r">17%</td><td class="r">27%</td><td class="r">23%</td><td class="r">20%</td><td class="r">20%</td></tr>
+  <tr><td class="da"><b>DS Acc</b></td><td class="y">63%</td><td class="y">60%</td><td class="y">50%</td><td class="y">53%</td><td class="y">60%</td><td class="y">50%</td></tr>
+  <tr><td class="qa"><b>Qwen PI</b></td><td>81</td><td>51</td><td>52</td><td>43</td><td>45</td><td>43</td></tr>
+  <tr><td class="da"><b>DS PI</b></td><td>148</td><td>145</td><td>138</td><td>138</td><td>140</td><td>145</td></tr>
+</table>
+<div class="box"><b>s 无主效应</b>——两模型一致。4B PI 计数低与整体准确率低相关（更多遗漏而非侵入）。</div>
+
+<hr>
+
+<!-- ══════════════════════════ 3. SEQ vs BATCH ══════════════════════════ -->
+<h1>3. Sequential vs Batch</h1>
+<table>
+  <tr><th></th><th>Qwen Batch</th><th>Qwen Seq</th><th>DS Batch</th><th>DS Seq</th></tr>
+  <tr><td><b>Accuracy</b></td><td class="r">22%</td><td class="y">39%</td><td class="y">50%</td><td class="y">56%</td></tr>
+  <tr><td><b>PI</b></td><td>37</td><td>71</td><td>124</td><td>130</td></tr>
+</table>
+<div class="box">Sequential 一致优于 Batch——每个 NPC 获得公平编码机会。4B 差距更显著 (22%→39%)。</div>
+
+<hr>
+
+<!-- ══════════════════════════ 4. CONTEXT CONTROL ══════════════════════════ -->
+<h1>4. PI vs Context Length</h1>
+<h2>固定 150 NPCs, info=25→150</h2>
+<table>
+  <tr><th></th><th>info=25</th><th>info=50</th><th>info=75</th><th>info=100</th><th>info=150</th></tr>
+  <tr><td class="qa"><b>Qwen Acc</b></td><td class="r">17%</td><td class="y">33%</td><td class="y">30%</td><td class="y">30%</td><td class="r">23%</td></tr>
+  <tr><td class="da"><b>DS Acc</b></td><td class="g">70%</td><td class="y">63%</td><td class="y">57%</td><td class="y">50%</td><td class="y">50%</td></tr>
+  <tr><td class="qa"><b>Qwen PI</b></td><td>8</td><td>30</td><td>40</td><td>65</td><td>56</td></tr>
+  <tr><td class="da"><b>DS PI</b></td><td>23</td><td>53</td><td>66</td><td>105</td><td>138</td></tr>
+</table>
+<div class="box">PI 随 info 递增——两模型一致。4B 整体偏低。</div>
+
+<hr>
+
+<!-- ══════════════════════════ 5. 3x3 ══════════════════════════ -->
+<h1>5. 3+3 共享/独特槽位 + Dual-Case</h1>
+<h2>AB 组 (W→C) · sequential · 每10人双案query</h2>
+
+<h3>Qwen3-4B</h3>
+<table>
+  <tr><th>Q</th><th>NPC</th><th>C1_sh (W共享)</th><th>C1_un (W独特)</th><th>C2_sh (C共享)</th><th>C2_un (C独特)</th><th>cross</th></tr>
+  <tr style="border-bottom:2px solid #666"><td>Q5</td><td>50</td><td class="y">60%</td><td class="y">60%</td><td style="color:#888">—</td><td style="color:#888">—</td><td>0.0</td></tr>
+  <tr style="background:#1b3a2a"><td>Q6</td><td>60</td><td class="y">33%</td><td class="r">0%</td><td class="y">33%</td><td class="r">20%</td><td class="r">2.0</td></tr>
+  <tr><td>Q10</td><td>100</td><td class="y">33%</td><td class="r">0%</td><td class="y">53%</td><td class="y">47%</td><td class="r">2.0</td></tr>
+</table>
+
+<h3>DeepSeek API</h3>
+<table>
+  <tr><th>Q</th><th>NPC</th><th>AB 共享</th><th>AB 独特</th><th>BB 同槽位</th><th>释放</th><th>错误来自A</th></tr>
+  <tr style="border-bottom:2px solid #666"><td>Q5</td><td>50</td><td class="y">40%</td><td style="color:#888">—</td><td style="color:#888">—</td><td>—</td><td>—</td></tr>
+  <tr style="background:#1b3a2a"><td>Q6</td><td>60</td><td class="y">60%</td><td class="g">67%</td><td class="y">50%</td><td class="g">+17%</td><td class="r">82%</td></tr>
+  <tr><td>Q10</td><td>100</td><td class="g">80%</td><td class="r">7%</td><td class="r">33%</td><td class="r">-27%</td><td class="y">52%</td></tr>
+</table>
+
+<div class="flex">
+  <div class="good"><b>一致发现</b>：共享槽位跨案污染持续 (Qwen cross=2.0, DS shared_fromA=52-82%)。独特槽位"优势"是数量效应——新槽位无旧值。Qwen 独特槽位 Q10=47% (DS=7%)——Qwen 在双案 query 下对独特槽位的追踪优于 DS。</div>
+  <div class="warn"><b>差异</b>：Qwen C1_un → 0% (仓库独特槽位完全遗忘)，DS 在非标准槽位 (车牌) Q10=7% 也崩塌。两个模型在不同槽位上表现差。</div>
+</div>
+
+<hr>
+
+<!-- ══════════════════════════ 6. ORTHOGONAL ══════════════════════════ -->
+<h1>6. 正交槽位 + Dual-Case</h1>
+<h2>零重叠 · AA/BB/AB/BA</h2>
+<table>
+  <tr><th>组</th><th>Qwen C1 Q10</th><th>Qwen C2 Q10</th><th>DS C1 Q10</th><th>DS C2 Q10</th><th>Qwen Cost</th><th>DS Cost</th></tr>
+  <tr style="background:#1b3a2a"><td>AA</td><td class="g">67%</td><td>—</td><td class="g">77%</td><td>—</td><td>—</td><td>—</td></tr>
+  <tr style="background:#1b3a2a"><td>BB</td><td>—</td><td class="g">83%</td><td>—</td><td class="g">77%</td><td>—</td><td>—</td></tr>
+  <tr><td>AB</td><td class="r">17%</td><td class="r">0%</td><td class="r">23%</td><td class="g">73%</td><td class="r">-33%/-50%</td><td class="y">-20%/+73%</td></tr>
+  <tr><td>BA</td><td class="y">50%</td><td class="r">17%</td><td class="y">47%</td><td class="r">17%</td><td class="r">-50%</td><td class="r">-63%</td></tr>
+</table>
+<div class="flex">
+  <div class="good"><b>Cross = 0</b> (正交槽位结构必然)。一致性高。</div>
+  <div class="warn"><b>Dual-task cost 两模型均显著</b>：Qwen AB-33%, DS AB-20%。BA 组 cost 更严重 (50-63%)。</div>
+</div>
+
+<hr>
+
+<!-- ══════════════════════════ 7. CONCLUSION ══════════════════════════ -->
+<h1>7. 跨模型结论</h1>
+
+<table>
+  <tr><th>现象</th><th>Qwen3-4B</th><th>DeepSeek 671B</th><th>一致性</th></tr>
+  <tr><td>cred&lt;gold ≈ 80%</td><td class="g">✓</td><td class="g">✓</td><td class="g">完美</td></tr>
+  <tr><td>s 无主效应</td><td class="g">✓</td><td class="g">✓</td><td class="g">完美</td></tr>
+  <tr><td>Seq &gt; Batch</td><td class="g">✓</td><td class="g">✓</td><td class="g">一致</td></tr>
+  <tr><td>PI 由 info 量驱动</td><td class="g">✓</td><td class="g">✓</td><td class="g">一致</td></tr>
+  <tr><td>同槽位 cross &gt; 0</td><td class="r">67%</td><td class="r">93%</td><td class="y">方向一致</td></tr>
+  <tr><td>正交 Cross = 0</td><td class="g">✓</td><td class="g">✓</td><td class="g">结构必然</td></tr>
+  <tr><td>Dual-task cost</td><td class="r">-33%~-50%</td><td class="r">-20%~-63%</td><td class="y">方向一致</td></tr>
+  <tr><td>PI Release</td><td class="r">✗</td><td class="r">✗</td><td class="g">一致 null</td></tr>
+</table>
+
+<div class="takeaway" style="font-size:1.2em;color:#ffb74d;text-align:center;margin:24px 0">
+  <b>LLM 没有 category-based memory organization<br>
+  PI Release 在 Transformer 架构上不存在</b>
+</div>
+
+<div class="box">
+  Slot-level PI (content-addressable retrieval) + Discourse-level PI (注意力竞争)<br>
+  两种机制共同解释了为什么 Wickens 范畴释放效应在 LLM 中缺失。<br>
+  模型规模 (0.6B → 4B → 671B) 改变了绝对性能但不改变定性结论。
+</div>
+
+</body>
+</html>

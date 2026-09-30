@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: https://guojl06.github.io/sitemap.xml

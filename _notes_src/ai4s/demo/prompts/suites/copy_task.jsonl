@@ -1,0 +1,2 @@
+{"prompt_id": "copy_0001", "task": "copy_task", "condition": "last_word", "prompt": "Repeat the last word: cat dog bird ->", "target_text": " bird", "expected_answer": "bird", "variables": {"sequence_length": 3, "target_position": "last"}, "tags": ["copy", "recency"]}
+{"prompt_id": "copy_0002", "task": "copy_task", "condition": "last_word", "prompt": "Repeat the last word: red blue green ->", "target_text": " green", "expected_answer": "green", "variables": {"sequence_length": 3, "target_position": "last"}, "tags": ["copy", "recency"]}

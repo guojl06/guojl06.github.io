@@ -1,0 +1,20 @@
+solution_2.cpp:11:26: runtime error: index 2000 out of bounds for type 'int[2000][2000]'
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior solution_2.cpp:11:26 
+solution_2.cpp:17:47: runtime error: index 2000 out of bounds for type 'int[2000]'
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior solution_2.cpp:17:47 
+solution_2.cpp:17:13: runtime error: index 2000 out of bounds for type 'int[2000]'
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior solution_2.cpp:17:13 
+solution_2.cpp:15:9: runtime error: index 2000 out of bounds for type 'int[2000][2000]'
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior solution_2.cpp:15:9 
+solution_2.cpp:17:28: runtime error: index 2000 out of bounds for type 'int[2000][2000]'
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior solution_2.cpp:17:28 
+solution_2.cpp:17:47: runtime error: index 2000 out of bounds for type 'int[2000][2000]'
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior solution_2.cpp:17:47 
+solution_2.cpp:17:13: runtime error: index 2000 out of bounds for type 'int[2000][2000]'
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior solution_2.cpp:17:13 
+solution_2.cpp:26:20: runtime error: index 2001 out of bounds for type 'int[2000]'
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior solution_2.cpp:26:20 
+solution_2.cpp:26:20: runtime error: index 2000 out of bounds for type 'int[2000][2000]'
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior solution_2.cpp:26:20 
+solution_2.cpp:26:43: runtime error: index 2000 out of bounds for type 'int[2000][2000]'
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior solution_2.cpp:26:43 
